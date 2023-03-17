@@ -1,0 +1,14 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Cat Shelter CRM",
+        "contact": {
+            "name": "Lev Yuvenskiy",
+            "email": "levayu22@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "127.0.0.1:9000",
+    "basePath": "/",
+    "paths": {}
+}
