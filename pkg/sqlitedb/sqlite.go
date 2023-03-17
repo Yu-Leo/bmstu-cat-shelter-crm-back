@@ -1,9 +1,8 @@
-package sqliteStorage
+package sqlitedb
 
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -12,28 +11,24 @@ type Storage struct {
 	DB *sql.DB
 }
 
-func NewStorage(path string) *Storage {
+func NewStorage(path string) (*Storage, error) {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	if err := db.Ping(); err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return &Storage{DB: db}
+	return &Storage{DB: db}, nil
 }
 
 func (s *Storage) Init(ctx context.Context) error {
-	q := `CREATE TABLE IF NOT EXISTS cats (
+	q := `
+DROP TABLE IF EXISTS cats;
+CREATE TABLE IF NOT EXISTS cats (
     id INTEGER PRIMARY KEY,
     name varchar(80) UNIQUE NOT NULL);`
 
 	_, err := s.DB.ExecContext(ctx, q)
-	if err != nil {
-		return fmt.Errorf("can't create table: %w", err)
-	}
-
-	return nil
+	return err
 }

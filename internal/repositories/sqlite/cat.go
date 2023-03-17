@@ -5,14 +5,14 @@ import (
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqliteStorage"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 )
 
 type catRepository struct {
-	storage *sqliteStorage.Storage
+	storage *sqlitedb.Storage
 }
 
-func NewSqliteCatRepository(storage *sqliteStorage.Storage) repositories.CatRepository {
+func NewSqliteCatRepository(storage *sqlitedb.Storage) repositories.CatRepository {
 	return &catRepository{
 		storage: storage,
 	}

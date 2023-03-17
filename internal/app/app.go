@@ -13,22 +13,26 @@ import (
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories/sqlite"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqliteStorage"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/config"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/httpserver"
 )
 
 func Run(cfg *config.Config, l logger.Interface) {
-	storage := sqliteStorage.NewStorage("db.db")
-	if err := storage.Init(context.Background()); err != nil {
-		fmt.Println(err)
-		l.Error(fmt.Sprintf("SQLite database open errr: %e", err))
+	storage, err := sqlitedb.NewStorage(cfg.Storage.Path)
+	if err != nil {
+		l.Error(fmt.Sprintf("SQLite database open error: %e", err))
+		return
+	}
+	err = storage.Init(context.Background())
+	if err != nil {
+		l.Error(fmt.Sprintf("SQLite database init error: %e", err))
 		return
 	}
 	defer storage.DB.Close()
 
-	l.Info("Run application")
+	l.Info("Start application")
 
 	if cfg.Server.Mode == gin.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode)
@@ -50,7 +54,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 		l.Error(fmt.Sprintf("HTTPServer notify error: %e", err))
 	}
 
-	err := httpServer.Shutdown()
+	err = httpServer.Shutdown()
 	if err == nil {
 		l.Info("Shutdown HTTPServer")
 	} else {
@@ -58,7 +62,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 	}
 }
 
-func addRouter(ginEngine *gin.Engine, l logger.Interface, storage *sqliteStorage.Storage) {
+func addRouter(ginEngine *gin.Engine, l logger.Interface, storage *sqlitedb.Storage) {
 	catRepository := sqlite.NewSqliteCatRepository(storage)
 	catService := services.NewCatService(catRepository)
 	rest.NewRouter(ginEngine, l, catService)

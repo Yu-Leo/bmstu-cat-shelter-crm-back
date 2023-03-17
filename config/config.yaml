@@ -1,5 +1,5 @@
 app:
-  name: 'avito-tech-backend-trainee-2020'
+  name: 'bmstu-cat-shelter-crm-back'
   version: '1.0.0'
 
 server:
@@ -9,3 +9,5 @@ server:
 logger:
   log_level: 'debug'
 
+storage:
+  path: 'database.db'

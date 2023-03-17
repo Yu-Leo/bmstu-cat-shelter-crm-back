@@ -12,9 +12,10 @@ const (
 )
 
 type Config struct {
-	App    AppConfig    `yaml:"app"`
-	Server ServerConfig `yaml:"server"`
-	Logger LoggerConfig `yaml:"logger"`
+	App     AppConfig     `yaml:"app"`
+	Server  ServerConfig  `yaml:"server"`
+	Logger  LoggerConfig  `yaml:"logger"`
+	Storage StorageConfig `yaml:"storage"`
 }
 
 type AppConfig struct {
@@ -30,6 +31,10 @@ type ServerConfig struct {
 
 type LoggerConfig struct {
 	Level string `yaml:"log_level" env:"LOG_LEVEL" env-default:"info"`
+}
+
+type StorageConfig struct {
+	Path string `env-required:"true" yaml:"path" env:"DB_PATH"`
 }
 
 var instance *Config
