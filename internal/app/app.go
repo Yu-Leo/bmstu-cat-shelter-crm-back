@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -9,15 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints/rest"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories/mock"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories/sqlite"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqliteStorage"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/config"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/httpserver"
 )
 
 func Run(cfg *config.Config, l logger.Interface) {
+	storage := sqliteStorage.NewStorage("db.db")
+	if err := storage.Init(context.Background()); err != nil {
+		fmt.Println(err)
+		l.Error(fmt.Sprintf("SQLite database open errr: %e", err))
+		return
+	}
+	defer storage.DB.Close()
+
 	l.Info("Run application")
 
 	if cfg.Server.Mode == gin.ReleaseMode {
@@ -25,7 +35,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 	}
 
 	ginEngine := gin.Default()
-	addRouter(ginEngine, l)
+	addRouter(ginEngine, l, storage)
 
 	httpServer := httpserver.New(ginEngine, cfg.Server.Host, cfg.Server.Port)
 	l.Info(fmt.Sprintf("Run server on %s:%d", cfg.Server.Host, cfg.Server.Port))
@@ -48,8 +58,8 @@ func Run(cfg *config.Config, l logger.Interface) {
 	}
 }
 
-func addRouter(ginEngine *gin.Engine, l logger.Interface) {
-	catRepository := mock.NewMockCatRepository()
+func addRouter(ginEngine *gin.Engine, l logger.Interface, storage *sqliteStorage.Storage) {
+	catRepository := sqlite.NewSqliteCatRepository(storage)
 	catService := services.NewCatService(catRepository)
 	rest.NewRouter(ginEngine, l, catService)
 }
