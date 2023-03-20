@@ -8,4 +8,5 @@ import (
 
 type CatRepository interface {
 	Create(context.Context, models.CreateCatRequest) (*models.CatId, error)
+	GetCatsList(context.Context) (*[]models.Cat, error)
 }

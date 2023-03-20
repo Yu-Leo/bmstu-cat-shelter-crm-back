@@ -20,3 +20,7 @@ func NewCatService(catRepository repositories.CatRepository) *CatService {
 func (s CatService) CreateCat(requestData models.CreateCatRequest) (*models.CatId, error) {
 	return s.repository.Create(context.Background(), requestData)
 }
+
+func (s CatService) GetCatsList() (*[]models.Cat, error) {
+	return s.repository.GetCatsList(context.Background())
+}

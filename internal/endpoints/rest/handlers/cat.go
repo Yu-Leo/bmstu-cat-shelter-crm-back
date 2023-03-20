@@ -25,7 +25,8 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 
 	catHandlerGroup := handler.Group("/cats")
 	{
-		catHandlerGroup.POST("/add", uR.CreateCat)
+		catHandlerGroup.POST("/", uR.CreateCat)
+		catHandlerGroup.GET("/", uR.GetCatsList)
 	}
 }
 
@@ -48,4 +49,14 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, *newCatId)
+}
+
+func (r *catRoutes) GetCatsList(c *gin.Context) {
+	catsList, err := r.catService.GetCatsList()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		r.logger.Error(err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, *catsList)
 }
