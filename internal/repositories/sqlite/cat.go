@@ -18,11 +18,13 @@ func NewSqliteCatRepository(storage *sqlitedb.Storage) repositories.CatRepositor
 	}
 }
 
-func (cr *catRepository) Create(ctx context.Context, requestData models.CreateCatRequest) (catId *models.CatId, err error) {
-	q := `INSERT INTO cats (name) VALUES (?) RETURNING id`
-
+func (cr *catRepository) Create(ctx context.Context, rd models.CreateCatRequest) (catId *models.CatId, err error) {
+	q := `INSERT INTO cats (nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter)
+VALUES (?,?, ?, ?, ?, ?) RETURNING cats.id`
+	
 	var id int
-	err = cr.storage.DB.QueryRowContext(ctx, q, requestData.Name).Scan(&id)
+	err = cr.storage.DB.QueryRowContext(ctx, q,
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&id)
 
 	if err != nil {
 		return nil, err

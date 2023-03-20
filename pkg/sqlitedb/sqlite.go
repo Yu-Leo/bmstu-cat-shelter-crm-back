@@ -25,9 +25,22 @@ func NewStorage(path string) (*Storage, error) {
 func (s *Storage) Init(ctx context.Context) error {
 	q := `
 DROP TABLE IF EXISTS cats;
-CREATE TABLE IF NOT EXISTS cats (
-    id INTEGER PRIMARY KEY,
-    name varchar(80) UNIQUE NOT NULL);`
+CREATE TABLE cats (
+    id integer PRIMARY KEY,
+    photo_url varchar(80),
+    nickname varchar(80) UNIQUE NOT NULL, 
+    gender boolean NOT NULL, 
+    age integer NOT NULL,
+    chip_number varchar(15) UNIQUE NOT NULL,
+    date_of_admission_to_shelter date NOT NULL);`
+	/*
+		TODO:
+			photo_url: ?
+			nickname: 80 ?
+			gender: Enum (?), check
+			age: not negative
+			chip_number: unique ?, constraint: only digits
+	*/
 
 	_, err := s.DB.ExecContext(ctx, q)
 	return err

@@ -19,6 +19,6 @@ func NewMockCatRepository() repositories.CatRepository {
 
 func (ur *catRepository) Create(ctx context.Context, requestData models.CreateCatRequest) (catId *models.CatId, err error) {
 	a := len(ur.data)
-	ur.data[a] = models.Cat{Id: a, Name: requestData.Name}
+	ur.data[a] = models.Cat{Id: a, Nickname: requestData.Name}
 	return &models.CatId{Id: a}, nil
 }

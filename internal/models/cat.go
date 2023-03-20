@@ -1,8 +1,15 @@
 package models
 
+import "time"
+
 type Cat struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	Id                       int       `json:"id"`
+	Nickname                 string    `json:"nickname"`
+	PhotoUrl                 string    `json:"photoUrl"`
+	Gender                   bool      `json:"gender"`
+	Age                      int       `json:"age"`
+	ChipNumber               string    `json:"chipNumber"`
+	DateOfAdmissionToShelter time.Time `json:"dateOfAdmissionToShelter"`
 }
 
 type CatId struct {
@@ -10,5 +17,10 @@ type CatId struct {
 }
 
 type CreateCatRequest struct {
-	Name string `json:"name" binding:"required"`
+	Nickname                 string    `json:"nickname" binding:"required"`
+	PhotoUrl                 string    `json:"photoUrl"`
+	Gender                   bool      `json:"gender"`
+	Age                      int       `json:"age"`
+	ChipNumber               string    `json:"chipNumber"`
+	DateOfAdmissionToShelter time.Time `json:"dateOfAdmissionToShelter"`
 }
