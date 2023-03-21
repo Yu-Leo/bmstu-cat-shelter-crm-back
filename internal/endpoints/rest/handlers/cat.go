@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -27,6 +28,8 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 	{
 		catHandlerGroup.POST("/", uR.CreateCat)
 		catHandlerGroup.GET("/", uR.GetCatsList)
+		catHandlerGroup.GET("/:id", uR.GetCat)
+
 	}
 }
 
@@ -63,4 +66,19 @@ func (r *catRoutes) GetCatsList(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, *catsList)
+}
+
+func (r *catRoutes) GetCat(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	cat, err := r.catService.GetCat(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		r.logger.Error(err.Error())
+		return
+	}
+	if cat == nil {
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
+	c.JSON(http.StatusOK, *cat)
 }

@@ -24,3 +24,7 @@ func (s CatService) CreateCat(requestData models.CreateCatRequest) (*models.CatI
 func (s CatService) GetCatsList() (*[]models.Cat, error) {
 	return s.repository.GetCatsList(context.Background())
 }
+
+func (s CatService) GetCat(catId int) (*models.Cat, error) {
+	return s.repository.GetCat(context.Background(), catId)
+}

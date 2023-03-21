@@ -62,3 +62,16 @@ func (cr *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Ca
 
 	return &answer, nil
 }
+
+func (cr *catRepository) GetCat(ctx context.Context, catId int) (*models.Cat, error) {
+	q := `SELECT id, nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
+		WHERE id = ?;`
+	cat := models.Cat{}
+	err := cr.storage.DB.QueryRow(q, catId).Scan(&cat.Id, &cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
+
+	if err != nil {
+		return nil, nil
+	}
+
+	return &cat, nil
+}
