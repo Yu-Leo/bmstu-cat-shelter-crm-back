@@ -27,20 +27,12 @@ func (s *Storage) Init(ctx context.Context) error {
 DROP TABLE IF EXISTS cats;
 CREATE TABLE cats (
     id integer PRIMARY KEY,
-    photo_url varchar(80),
-    nickname varchar(80) UNIQUE NOT NULL, 
-    gender boolean NOT NULL, 
-    age integer NOT NULL,
-    chip_number varchar(15) UNIQUE NOT NULL,
+    photo_url text,
+    nickname text NOT NULL, 
+    gender text NOT NULL CHECK(gender IN ('male','female')), 
+    age integer NOT NULL CHECK(age >= 0),
+    chip_number text UNIQUE NOT NULL CHECK(LENGTH(chip_number) == 15),
     date_of_admission_to_shelter date NOT NULL);`
-	/*
-		TODO:
-			photo_url: ?
-			nickname: 80 ?
-			gender: Enum (?), check
-			age: not negative
-			chip_number: unique ?, constraint: only digits
-	*/
 
 	_, err := s.DB.ExecContext(ctx, q)
 	return err
