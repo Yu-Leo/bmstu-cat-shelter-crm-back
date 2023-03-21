@@ -43,6 +43,10 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 
 	newCatId, err := r.catService.CreateCat(requestData)
 	if err != nil {
+		if err == apperror.ValidationError {
+			c.JSON(http.StatusBadRequest, err)
+			return
+		}
 		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
 		r.logger.Error(err.Error())
 		return

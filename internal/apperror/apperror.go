@@ -1,5 +1,9 @@
 package apperror
 
+var (
+	ValidationError = NewAppError("Validation error")
+)
+
 const (
 	ValidationErrorMsg     = "Validation error"
 	InternalServerErrorMsg = "Internal Server Error"
@@ -16,4 +20,9 @@ type AppError struct {
 
 func (e *AppError) Error() string {
 	return e.Message
+}
+func NewAppError(message string) *AppError {
+	return &AppError{
+		Message: message,
+	}
 }

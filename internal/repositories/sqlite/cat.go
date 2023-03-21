@@ -2,10 +2,14 @@ package sqlite
 
 import (
 	"context"
+	"strings"
 
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
+
+	sqlite3 "github.com/mattn/go-sqlite3"
 )
 
 type catRepository struct {
@@ -23,10 +27,14 @@ func (cr *catRepository) Create(ctx context.Context, rd models.CreateCatRequest)
 VALUES (?,?, ?, ?, ?, ?) RETURNING cats.id;`
 
 	var id int
+
 	err = cr.storage.DB.QueryRowContext(ctx, q,
 		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&id)
 
 	if err != nil {
+		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
+			return nil, apperror.ValidationError
+		}
 		return nil, err
 	}
 	return &models.CatId{Id: id}, nil
