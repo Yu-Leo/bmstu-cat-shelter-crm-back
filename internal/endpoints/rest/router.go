@@ -29,7 +29,7 @@ func NewRouter(ginEngine *gin.Engine, logger logger.Interface,
 
 	// Routers
 	ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	ginEngine.GET("/health", health)
+	ginEngine.GET("/health/", health)
 	router := ginEngine.Group("")
 	{
 		handlers.NewCatRoutes(router, catService, logger)
@@ -37,5 +37,10 @@ func NewRouter(ginEngine *gin.Engine, logger logger.Interface,
 }
 
 func health(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var a = struct {
+		Status  int    `json:"status"`
+		Message string `json:"message"`
+	}{Status: 200,
+		Message: "OK"}
+	c.JSON(http.StatusOK, a)
 }
