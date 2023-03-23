@@ -26,13 +26,24 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 
 	catHandlerGroup := handler.Group("/cats")
 	{
-		catHandlerGroup.POST("/", uR.CreateCat)
-		catHandlerGroup.GET("/", uR.GetCatsList)
+		catHandlerGroup.POST("", uR.CreateCat)
+		catHandlerGroup.GET("", uR.GetCatsList)
 		catHandlerGroup.GET("/:id", uR.GetCat)
 
 	}
 }
 
+// CreateCat
+// @Summary     Create cat
+// @ID          createCat
+// @Tags  	    cats
+// @Accept      json
+// @Produce     json
+// @Param createCatObject body models.CreateCatRequest true "Parameters for creating a cat."
+// @Success     201 {object} models.CatId
+// @Failure	    400 {object} apperror.ErrorJSON
+// @Failure	    500 {object} apperror.ErrorJSON
+// @Router      /cats [post]
 func (r *catRoutes) CreateCat(c *gin.Context) {
 	requestData := models.CreateCatRequest{}
 
@@ -58,6 +69,15 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 	c.JSON(http.StatusCreated, *newCatId)
 }
 
+// GetCatsList
+// @Summary     Get cats list
+// @ID          getCatsList
+// @Tags  	    cats
+// @Accept      json
+// @Produce     json
+// @Success     200 {array} models.Cat
+// @Failure	    500 {object} apperror.ErrorJSON
+// @Router      /cats [get]
 func (r *catRoutes) GetCatsList(c *gin.Context) {
 	catsList, err := r.catService.GetCatsList()
 	if err != nil {

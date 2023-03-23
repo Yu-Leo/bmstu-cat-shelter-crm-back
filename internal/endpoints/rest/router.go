@@ -29,18 +29,28 @@ func NewRouter(ginEngine *gin.Engine, logger logger.Interface,
 
 	// Routers
 	ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	ginEngine.GET("/health/", health)
+	ginEngine.GET("/health", health)
 	router := ginEngine.Group("")
 	{
 		handlers.NewCatRoutes(router, catService, logger)
 	}
 }
 
+type healthResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
+// Health
+// @Summary     Health check
+// @ID          health
+// @Tags  	    health
+// @Accept      json
+// @Produce     json
+// @Success     200 {object} healthResponse
+// @Router      /health [get]
 func health(c *gin.Context) {
-	var a = struct {
-		Status  int    `json:"status"`
-		Message string `json:"message"`
-	}{Status: 200,
+	var a = healthResponse{Status: 200,
 		Message: "OK"}
 	c.JSON(http.StatusOK, a)
 }

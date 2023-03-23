@@ -18,7 +18,191 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/cats": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cats"
+                ],
+                "summary": "Get cats list",
+                "operationId": "getCatsList",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Cat"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cats"
+                ],
+                "summary": "Create cat",
+                "operationId": "createCat",
+                "parameters": [
+                    {
+                        "description": "Parameters for creating a cat.",
+                        "name": "createCatObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateCatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CatId"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "operationId": "health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rest.healthResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "apperror.ErrorJSON": {
+            "type": "object",
+            "properties": {
+                "developerMessage": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Cat": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CatId": {
+            "type": "object",
+            "properties": {
+                "catId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CreateCatRequest": {
+            "type": "object",
+            "required": [
+                "nickname"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.healthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
