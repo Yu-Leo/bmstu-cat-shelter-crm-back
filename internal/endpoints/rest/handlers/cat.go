@@ -88,6 +88,16 @@ func (r *catRoutes) GetCatsList(c *gin.Context) {
 	c.JSON(http.StatusOK, *catsList)
 }
 
+// GetCat
+// @Summary     Get cat
+// @ID          getCat
+// @Tags  	    cats
+// @Accept      json
+// @Produce     json
+// @Param chip_number path string true "Chip number"
+// @Success     200 {object} models.Cat
+// @Failure	    500 {object} apperror.ErrorJSON
+// @Router      /cats/{chip_number} [get]
 func (r *catRoutes) GetCat(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 	cat, err := r.catService.GetCat(models.CatChipNumber{ChipNumber: chipNumber})
@@ -103,6 +113,16 @@ func (r *catRoutes) GetCat(c *gin.Context) {
 	c.JSON(http.StatusOK, *cat)
 }
 
+// DeleteCat
+// @Summary     Delete cat
+// @ID          deleteCat
+// @Tags  	    cats
+// @Accept      json
+// @Produce     json
+// @Param chip_number path string true "Chip number"
+// @Success     204
+// @Failure	    500 {object} apperror.ErrorJSON
+// @Router      /cats/{chip_number} [delete]
 func (r *catRoutes) DeleteCat(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 	err := r.catService.DeleteCat(models.CatChipNumber{ChipNumber: chipNumber})

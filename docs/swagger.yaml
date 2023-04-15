@@ -109,6 +109,53 @@ paths:
       summary: Create cat
       tags:
       - cats
+  /cats/{chip_number}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteCat
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Delete cat
+      tags:
+      - cats
+    get:
+      consumes:
+      - application/json
+      operationId: getCat
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Cat'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Get cat
+      tags:
+      - cats
   /health:
     get:
       consumes:
