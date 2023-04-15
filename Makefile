@@ -1,3 +1,3 @@
 swag-init:
-	swag init -g internal/endpoints/rest/router.go
+	swag init -g internal/endpoints/router.go
 .PHONY: swag-init

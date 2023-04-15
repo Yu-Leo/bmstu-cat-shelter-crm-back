@@ -183,7 +183,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rest.healthResponse"
+                            "$ref": "#/definitions/endpoints.healthResponse"
                         }
                     }
                 }
@@ -199,6 +199,17 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "endpoints.healthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
@@ -256,17 +267,6 @@ const docTemplate = `{
                 },
                 "photoUrl": {
                     "type": "string"
-                }
-            }
-        },
-        "rest.healthResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
                 }
             }
         }

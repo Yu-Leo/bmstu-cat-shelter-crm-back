@@ -1,4 +1,4 @@
-package sqlite
+package repositories
 
 import (
 	"context"
@@ -6,17 +6,23 @@ import (
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 
 	sqlite3 "github.com/mattn/go-sqlite3"
 )
 
+type CatRepository interface {
+	Create(context.Context, models.CreateCatRequest) (*models.CatChipNumber, error)
+	GetCatsList(context.Context) (*[]models.Cat, error)
+	GetCat(context.Context, models.CatChipNumber) (*models.Cat, error)
+	DeleteCat(context.Context, models.CatChipNumber) error
+}
+
 type catRepository struct {
 	storage *sqlitedb.Storage
 }
 
-func NewSqliteCatRepository(storage *sqlitedb.Storage) repositories.CatRepository {
+func NewSqliteCatRepository(storage *sqlitedb.Storage) CatRepository {
 	return &catRepository{
 		storage: storage,
 	}

@@ -7,6 +7,13 @@ definitions:
       message:
         type: string
     type: object
+  endpoints.healthResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   models.Cat:
     properties:
       age:
@@ -43,13 +50,6 @@ definitions:
         type: string
     required:
     - nickname
-    type: object
-  rest.healthResponse:
-    properties:
-      message:
-        type: string
-      status:
-        type: integer
     type: object
 host: 127.0.0.1:9000
 info:
@@ -167,7 +167,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.healthResponse'
+            $ref: '#/definitions/endpoints.healthResponse'
       summary: Health check
       tags:
       - health

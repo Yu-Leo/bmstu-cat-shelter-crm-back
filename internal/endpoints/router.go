@@ -1,4 +1,4 @@
-package rest
+package endpoints
 
 import (
 	"net/http"
@@ -7,9 +7,9 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints/handlers"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints/rest/handlers"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 
 	_ "github.com/Yu-Leo/bmstu-cat-shelter-crm-back/docs"

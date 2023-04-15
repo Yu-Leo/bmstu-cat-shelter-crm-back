@@ -9,8 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints/rest"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories/sqlite"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
@@ -63,7 +63,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 }
 
 func addRouter(ginEngine *gin.Engine, l logger.Interface, storage *sqlitedb.Storage) {
-	catRepository := sqlite.NewSqliteCatRepository(storage)
+	catRepository := repositories.NewSqliteCatRepository(storage)
 	catService := services.NewCatService(catRepository)
-	rest.NewRouter(ginEngine, l, catService)
+	endpoints.NewRouter(ginEngine, l, catService)
 }
