@@ -22,14 +22,14 @@ func NewSqliteCatRepository(storage *sqlitedb.Storage) repositories.CatRepositor
 	}
 }
 
-func (cr *catRepository) Create(ctx context.Context, rd models.CreateCatRequest) (catId *models.CatId, err error) {
+func (cr *catRepository) Create(ctx context.Context, rd models.CreateCatRequest) (catId *models.CatChipNumber, err error) {
 	q := `INSERT INTO cats (nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter)
-VALUES (?,?, ?, ?, ?, ?) RETURNING cats.id;`
+VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
-	var id int
+	var chip_number string
 
 	err = cr.storage.DB.QueryRowContext(ctx, q,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&id)
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chip_number)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -37,11 +37,11 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.id;`
 		}
 		return nil, err
 	}
-	return &models.CatId{Id: id}, nil
+	return &models.CatChipNumber{ChipNumber: chip_number}, nil
 }
 
 func (cr *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Cat, err error) {
-	q := `SELECT id, nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats;`
+	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats;`
 	answer := make([]models.Cat, 0)
 
 	rows, err := cr.storage.DB.Query(q)
@@ -53,7 +53,7 @@ func (cr *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Ca
 
 	for rows.Next() {
 		cat := models.Cat{}
-		err = rows.Scan(&cat.Id, &cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
+		err = rows.Scan(&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
 		if err != nil {
 			return nil, err
 		}
@@ -63,11 +63,11 @@ func (cr *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Ca
 	return &answer, nil
 }
 
-func (cr *catRepository) GetCat(ctx context.Context, catId int) (*models.Cat, error) {
-	q := `SELECT id, nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
-		WHERE id = ?;`
+func (cr *catRepository) GetCat(ctx context.Context, catChipNumber models.CatChipNumber) (*models.Cat, error) {
+	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
+		WHERE chip_number = ?;`
 	cat := models.Cat{}
-	err := cr.storage.DB.QueryRow(q, catId).Scan(&cat.Id, &cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
+	err := cr.storage.DB.QueryRow(q, catChipNumber).Scan(&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
 
 	if err != nil {
 		return nil, nil

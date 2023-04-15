@@ -77,7 +77,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.CatId"
+                            "$ref": "#/definitions/models.CatChipNumber"
                         }
                     },
                     "400": {
@@ -146,9 +146,6 @@ const docTemplate = `{
                 "gender": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "nickname": {
                     "type": "string"
                 },
@@ -157,11 +154,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CatId": {
+        "models.CatChipNumber": {
             "type": "object",
             "properties": {
-                "catId": {
-                    "type": "integer"
+                "chipNumber": {
+                    "type": "string"
                 }
             }
         },

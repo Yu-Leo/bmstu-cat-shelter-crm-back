@@ -17,7 +17,7 @@ func NewCatService(catRepository repositories.CatRepository) *CatService {
 	}
 }
 
-func (s CatService) CreateCat(requestData models.CreateCatRequest) (*models.CatId, error) {
+func (s CatService) CreateCat(requestData models.CreateCatRequest) (*models.CatChipNumber, error) {
 	return s.repository.Create(context.Background(), requestData)
 }
 
@@ -25,6 +25,6 @@ func (s CatService) GetCatsList() (*[]models.Cat, error) {
 	return s.repository.GetCatsList(context.Background())
 }
 
-func (s CatService) GetCat(catId int) (*models.Cat, error) {
-	return s.repository.GetCat(context.Background(), catId)
+func (s CatService) GetCat(catChipNumber models.CatChipNumber) (*models.Cat, error) {
+	return s.repository.GetCat(context.Background(), catChipNumber)
 }

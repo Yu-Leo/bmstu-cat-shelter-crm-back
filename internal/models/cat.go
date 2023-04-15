@@ -3,7 +3,6 @@ package models
 import "time"
 
 type Cat struct {
-	Id                       int       `json:"id"`
 	Nickname                 string    `json:"nickname"`
 	PhotoUrl                 string    `json:"photoUrl"`
 	Gender                   string    `json:"gender"`
@@ -12,8 +11,8 @@ type Cat struct {
 	DateOfAdmissionToShelter time.Time `json:"dateOfAdmissionToShelter"`
 }
 
-type CatId struct {
-	Id int `json:"catId"`
+type CatChipNumber struct {
+	ChipNumber string `json:"chipNumber"`
 }
 
 type CreateCatRequest struct {

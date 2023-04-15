@@ -17,17 +17,15 @@ definitions:
         type: string
       gender:
         type: string
-      id:
-        type: integer
       nickname:
         type: string
       photoUrl:
         type: string
     type: object
-  models.CatId:
+  models.CatChipNumber:
     properties:
-      catId:
-        type: integer
+      chipNumber:
+        type: string
     type: object
   models.CreateCatRequest:
     properties:
@@ -99,7 +97,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.CatId'
+            $ref: '#/definitions/models.CatChipNumber'
         "400":
           description: Bad Request
           schema:

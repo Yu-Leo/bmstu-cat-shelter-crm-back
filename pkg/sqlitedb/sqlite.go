@@ -26,12 +26,11 @@ func (s *Storage) Init(ctx context.Context) error {
 	q := `
 DROP TABLE IF EXISTS cats;
 CREATE TABLE cats (
-    id integer PRIMARY KEY,
     photo_url text,
     nickname text NOT NULL, 
     gender text NOT NULL CHECK(gender IN ('male','female')), 
     age integer NOT NULL CHECK(age >= 0),
-    chip_number text UNIQUE NOT NULL CHECK(LENGTH(chip_number) == 15),
+    chip_number text UNIQUE NOT NULL CHECK(LENGTH(chip_number) == 15) PRIMARY KEY,
     date_of_admission_to_shelter date NOT NULL);`
 
 	_, err := s.DB.ExecContext(ctx, q)
