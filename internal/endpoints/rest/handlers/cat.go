@@ -27,7 +27,8 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 	{
 		catHandlerGroup.POST("", uR.CreateCat)
 		catHandlerGroup.GET("", uR.GetCatsList)
-		catHandlerGroup.GET("/:id", uR.GetCat)
+		catHandlerGroup.GET("/:chip_number", uR.GetCat)
+		catHandlerGroup.DELETE("/:chip_number", uR.DeleteCat)
 
 	}
 }
@@ -100,4 +101,15 @@ func (r *catRoutes) GetCat(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, *cat)
+}
+
+func (r *catRoutes) DeleteCat(c *gin.Context) {
+	chipNumber := c.Params.ByName("chip_number")
+	err := r.catService.DeleteCat(models.CatChipNumber{ChipNumber: chipNumber})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		r.logger.Error(err.Error())
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }

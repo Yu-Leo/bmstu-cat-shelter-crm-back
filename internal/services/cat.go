@@ -28,3 +28,7 @@ func (s CatService) GetCatsList() (*[]models.Cat, error) {
 func (s CatService) GetCat(catChipNumber models.CatChipNumber) (*models.Cat, error) {
 	return s.repository.GetCat(context.Background(), catChipNumber)
 }
+
+func (s CatService) DeleteCat(catChipNumber models.CatChipNumber) error {
+	return s.repository.DeleteCat(context.Background(), catChipNumber)
+}
