@@ -32,3 +32,7 @@ func (s CatService) GetCat(catChipNumber models.CatChipNumber) (*models.Cat, err
 func (s CatService) DeleteCat(catChipNumber models.CatChipNumber) error {
 	return s.repository.DeleteCat(context.Background(), catChipNumber)
 }
+
+func (s CatService) UpdateCat(catChipNumber models.CatChipNumber, requestData models.CreateCatRequest) error {
+	return s.repository.UpdateCat(context.Background(), catChipNumber, requestData)
+}

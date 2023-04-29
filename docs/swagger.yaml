@@ -156,6 +156,34 @@ paths:
       summary: Get cat
       tags:
       - cats
+    put:
+      consumes:
+      - application/json
+      operationId: updateCat
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      - description: Parameters for updating a cat.
+        in: body
+        name: createCatObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCatRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Update cat
+      tags:
+      - cats
   /health:
     get:
       consumes:

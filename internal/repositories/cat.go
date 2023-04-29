@@ -17,6 +17,7 @@ type CatRepository interface {
 	GetCatsList(context.Context) (*[]models.Cat, error)
 	GetCat(context.Context, models.CatChipNumber) (*models.Cat, error)
 	DeleteCat(context.Context, models.CatChipNumber) error
+	UpdateCat(context.Context, models.CatChipNumber, models.CreateCatRequest) error
 }
 
 type catRepository struct {
@@ -88,5 +89,14 @@ func (cr *catRepository) DeleteCat(ctx context.Context, catChipNumber models.Cat
 FROM cats
 WHERE chip_number = ?;`
 	_, err := cr.storage.DB.Exec(q, catChipNumber.ChipNumber)
+	return err
+}
+
+func (cr *catRepository) UpdateCat(ctx context.Context, catChipNumber models.CatChipNumber, rd models.CreateCatRequest) error {
+	q := `UPDATE cats
+SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
+WHERE chip_number = ?;`
+	_, err := cr.storage.DB.Exec(q, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age,
+		rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber.ChipNumber)
 	return err
 }

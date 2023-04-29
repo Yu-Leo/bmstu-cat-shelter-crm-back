@@ -28,6 +28,7 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 		catHandlerGroup.POST("", uR.CreateCat)
 		catHandlerGroup.GET("", uR.GetCatsList)
 		catHandlerGroup.GET("/:chip_number", uR.GetCat)
+		catHandlerGroup.PUT("/:chip_number", uR.UpdateCat)
 		catHandlerGroup.DELETE("/:chip_number", uR.DeleteCat)
 
 	}
@@ -132,4 +133,36 @@ func (r *catRoutes) DeleteCat(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
+}
+
+// UpdateCat
+// @Summary     Update cat
+// @ID          updateCat
+// @Tags  	    cats
+// @Accept      json
+// @Produce     json
+// @Param chip_number path string true "Chip number"
+// @Param createCatObject body models.CreateCatRequest true "Parameters for updating a cat."
+// @Success     204
+// @Failure	    500 {object} apperror.ErrorJSON
+// @Router      /cats/{chip_number} [put]
+func (r *catRoutes) UpdateCat(c *gin.Context) {
+	chipNumber := c.Params.ByName("chip_number")
+	requestData := models.CreateCatRequest{}
+
+	err := c.BindJSON(&requestData)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{
+			Message:          apperror.ValidationErrorMsg,
+			DeveloperMessage: err.Error()})
+		return
+	}
+	err = r.catService.UpdateCat(models.CatChipNumber{ChipNumber: chipNumber}, requestData)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		r.logger.Error(err.Error())
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
+
 }
