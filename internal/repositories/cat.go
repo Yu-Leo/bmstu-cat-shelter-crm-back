@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 	"strings"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
@@ -75,8 +76,8 @@ func (cr *catRepository) GetCat(ctx context.Context, catChipNumber models.CatChi
 	cat := models.Cat{}
 	err := cr.storage.DB.QueryRow(q, catChipNumber.ChipNumber).Scan(&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
 
-	if err != nil {
-		return nil, nil // TODO: fix
+	if err == sql.ErrNoRows {
+		return nil, apperror.CatNotFound
 	}
 
 	return &cat, nil

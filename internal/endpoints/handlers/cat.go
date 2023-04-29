@@ -101,13 +101,13 @@ func (r *catRoutes) GetCatsList(c *gin.Context) {
 func (r *catRoutes) GetCat(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 	cat, err := r.catService.GetCat(models.CatChipNumber{ChipNumber: chipNumber})
+	if err == apperror.CatNotFound {
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
 		r.logger.Error(err.Error())
-		return
-	}
-	if cat == nil {
-		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	c.JSON(http.StatusOK, *cat)

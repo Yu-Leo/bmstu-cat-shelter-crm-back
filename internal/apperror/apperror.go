@@ -2,6 +2,7 @@ package apperror
 
 var (
 	ValidationError = NewAppError("Validation error")
+	CatNotFound     = NewAppError("Cat not found")
 )
 
 const (
