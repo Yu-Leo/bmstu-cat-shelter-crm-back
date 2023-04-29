@@ -41,7 +41,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return nil, apperror.ValidationError
+			return nil, apperror.CatChipNumberAlreadyExists
 		}
 		return nil, err
 	}

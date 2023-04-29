@@ -1,8 +1,9 @@
 package apperror
 
 var (
-	ValidationError = NewAppError("Validation error")
-	CatNotFound     = NewAppError("Cat not found")
+	ValidationError            = NewAppError("Validation error")
+	CatChipNumberAlreadyExists = NewAppError("Cat's chip number already exists")
+	CatNotFound                = NewAppError("Cat not found")
 )
 
 const (
