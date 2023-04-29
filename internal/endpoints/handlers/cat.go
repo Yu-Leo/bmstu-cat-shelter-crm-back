@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 )
 
 type catRoutes struct {
 	catService *services.CatService
-	logger     logger.Interface
+	logger     *logrus.Logger
 }
 
-func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, logger logger.Interface) {
+func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, logger *logrus.Logger) {
 	uR := &catRoutes{
 		catService: catService,
 		logger:     logger,

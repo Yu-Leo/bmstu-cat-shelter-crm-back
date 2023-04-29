@@ -8,18 +8,18 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/config"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/httpserver"
 )
 
-func Run(cfg *config.Config, l logger.Interface) {
+func Run(cfg *config.Config, l *logrus.Logger) {
 	storage, err := sqlitedb.NewStorage(cfg.Storage.Path)
 	if err != nil {
 		l.Error(fmt.Sprintf("SQLite database open error: %e", err))
@@ -42,7 +42,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 	addRouter(ginEngine, l, storage)
 
 	httpServer := httpserver.New(ginEngine, cfg.Server.Host, cfg.Server.Port)
-	l.Info(fmt.Sprintf("Run server on %s:%d", cfg.Server.Host, cfg.Server.Port))
+	l.Info(fmt.Sprintf("Run server on http://%s:%d", cfg.Server.Host, cfg.Server.Port))
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -62,7 +62,7 @@ func Run(cfg *config.Config, l logger.Interface) {
 	}
 }
 
-func addRouter(ginEngine *gin.Engine, l logger.Interface, storage *sqlitedb.Storage) {
+func addRouter(ginEngine *gin.Engine, l *logrus.Logger, storage *sqlitedb.Storage) {
 	catRepository := repositories.NewSqliteCatRepository(storage)
 	catService := services.NewCatService(catRepository)
 	endpoints.NewRouter(ginEngine, l, catService)

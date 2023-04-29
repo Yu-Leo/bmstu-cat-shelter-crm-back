@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints/handlers"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/logger"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
 
@@ -24,7 +24,7 @@ import (
 // @host      127.0.0.1:9000
 // @BasePath  /
 
-func NewRouter(ginEngine *gin.Engine, logger logger.Interface,
+func NewRouter(ginEngine *gin.Engine, logger *logrus.Logger,
 	catService *services.CatService) {
 
 	// Routers
