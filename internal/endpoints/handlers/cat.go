@@ -56,7 +56,7 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 	}
 
 	newCatId, err := r.catService.CreateCat(requestData)
-	if err == nil {
+	if err != nil {
 		if err == apperror.CatChipNumberAlreadyExists {
 			c.JSON(http.StatusBadRequest, err)
 			return
