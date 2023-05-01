@@ -1,14 +1,16 @@
 package apperror
 
 var (
-	ValidationError            = NewAppError("Validation error")
 	CatChipNumberAlreadyExists = NewAppError("Cat's chip number already exists")
+	PersonPhoneAlreadyExists   = NewAppError("Person's phone already exists")
 	CatNotFound                = NewAppError("Cat not found")
+	GuardianNotFound           = NewAppError("Guardian not found")
 )
 
 const (
 	ValidationErrorMsg     = "Validation error"
 	InternalServerErrorMsg = "Internal Server Error"
+	InvalidGuardianIdMsg   = "Invalid guardian id"
 )
 
 type ErrorJSON struct {

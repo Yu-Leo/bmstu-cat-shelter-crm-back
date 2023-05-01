@@ -64,6 +64,10 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 
 func addRouter(ginEngine *gin.Engine, l *logrus.Logger, storage *sqlitedb.Storage) {
 	catRepository := repositories.NewSqliteCatRepository(storage)
+	guardianRepository := repositories.NewSqliteGuardianRepository(storage)
+
 	catService := services.NewCatService(catRepository)
-	endpoints.NewRouter(ginEngine, l, catService)
+	guardianService := services.NewGuardianService(guardianRepository)
+
+	endpoints.NewRouter(ginEngine, l, catService, guardianService)
 }

@@ -24,8 +24,10 @@ import (
 // @host      127.0.0.1:9000
 // @BasePath  /
 
-func NewRouter(ginEngine *gin.Engine, logger *logrus.Logger,
-	catService *services.CatService) {
+func NewRouter(ginEngine *gin.Engine,
+	logger *logrus.Logger,
+	catService *services.CatService,
+	guardianServer *services.GuardianService) {
 
 	// Routers
 	ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -33,6 +35,7 @@ func NewRouter(ginEngine *gin.Engine, logger *logrus.Logger,
 	router := ginEngine.Group("")
 	{
 		handlers.NewCatRoutes(router, catService, logger)
+		handlers.NewGuardianRoutes(router, guardianServer, logger)
 	}
 }
 

@@ -51,6 +51,39 @@ definitions:
     required:
     - nickname
     type: object
+  models.CreateGuardianRequest:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
+      photoUrl:
+        type: string
+    type: object
+  models.Guardian:
+    properties:
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
+      photoUrl:
+        type: string
+    type: object
+  models.GuardianId:
+    properties:
+      id:
+        type: integer
+    type: object
 host: 127.0.0.1:9000
 info:
   contact:
@@ -184,6 +217,131 @@ paths:
       summary: Update cat
       tags:
       - cats
+  /guardians:
+    get:
+      consumes:
+      - application/json
+      operationId: getGuardiansList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Guardian'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Get guardians list
+      tags:
+      - guardians
+    post:
+      consumes:
+      - application/json
+      operationId: createGuardian
+      parameters:
+      - description: Parameters for creating a guardian.
+        in: body
+        name: createCatObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateGuardianRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.GuardianId'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Create guardian
+      tags:
+      - guardians
+  /guardians/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Delete guardian
+      tags:
+      - guardians
+    get:
+      consumes:
+      - application/json
+      operationId: getGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Guardian'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Get guardian
+      tags:
+      - guardians
+    put:
+      consumes:
+      - application/json
+      operationId: updateGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Parameters for updating a guardian.
+        in: body
+        name: createGuardianObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateGuardianRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Update guardian
+      tags:
+      - guardians
   /health:
     get:
       consumes:
