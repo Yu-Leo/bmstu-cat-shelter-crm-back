@@ -43,6 +43,7 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 
 	httpServer := httpserver.New(ginEngine, cfg.Server.Host, cfg.Server.Port)
 	l.Info(fmt.Sprintf("Run server on http://%s:%d", cfg.Server.Host, cfg.Server.Port))
+	l.Info(fmt.Sprintf("Open Swagger UI on http://%s:%d/swagger/index.html", cfg.Server.Host, cfg.Server.Port))
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
