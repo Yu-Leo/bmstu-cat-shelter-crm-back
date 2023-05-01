@@ -8,7 +8,3 @@ type Person struct {
 	PhotoUrl   string `json:"photoUrl"`
 	Phone      string `json:"phone"`
 }
-
-type PersonId struct {
-	Id int `json:"id"`
-}

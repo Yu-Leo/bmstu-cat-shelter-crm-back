@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-const (
-	_defaultReadTimeout     = 5 * time.Second
-	_defaultWriteTimeout    = 5 * time.Second
-	_defaultAddr            = ":80"
-	_defaultShutdownTimeout = 3 * time.Second
-)
-
 type Server struct {
 	server          *http.Server
 	notify          chan error
@@ -23,16 +16,12 @@ type Server struct {
 
 func New(handler http.Handler, host string, port int) *Server {
 	httpServer := &http.Server{
-		Handler:      handler,
-		ReadTimeout:  _defaultReadTimeout,
-		WriteTimeout: _defaultWriteTimeout,
-		Addr:         _defaultAddr,
+		Handler: handler,
 	}
 
 	s := &Server{
-		server:          httpServer,
-		notify:          make(chan error, 1),
-		shutdownTimeout: _defaultShutdownTimeout,
+		server: httpServer,
+		notify: make(chan error, 1),
 	}
 
 	s.server.Addr = net.JoinHostPort(host, strconv.Itoa(port))
@@ -54,6 +43,5 @@ func (s *Server) Notify() <-chan error {
 func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
-
 	return s.server.Shutdown(ctx)
 }

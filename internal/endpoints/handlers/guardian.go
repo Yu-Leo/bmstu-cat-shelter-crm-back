@@ -19,18 +19,18 @@ type guardianRoutes struct {
 }
 
 func NewGuardianRoutes(handler *gin.RouterGroup, guardianService *services.GuardianService, logger *logrus.Logger) {
-	uR := &guardianRoutes{
+	gR := &guardianRoutes{
 		guardianService: guardianService,
 		logger:          logger,
 	}
 
 	catHandlerGroup := handler.Group("/guardians")
 	{
-		catHandlerGroup.POST("", uR.CreateGuardian)
-		catHandlerGroup.GET("", uR.GetGuardiansList)
-		catHandlerGroup.GET("/:id", uR.GetGuardian)
-		catHandlerGroup.PUT("/:id", uR.UpdateGuardian)
-		catHandlerGroup.DELETE("/:id", uR.DeleteGuardian)
+		catHandlerGroup.POST("", gR.CreateGuardian)
+		catHandlerGroup.GET("", gR.GetGuardiansList)
+		catHandlerGroup.GET("/:id", gR.GetGuardian)
+		catHandlerGroup.PUT("/:id", gR.UpdateGuardian)
+		catHandlerGroup.DELETE("/:id", gR.DeleteGuardian)
 	}
 }
 
@@ -62,7 +62,7 @@ func (r *guardianRoutes) CreateGuardian(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -82,7 +82,7 @@ func (r *guardianRoutes) CreateGuardian(c *gin.Context) {
 func (r *guardianRoutes) GetGuardiansList(c *gin.Context) {
 	guardiansList, err := r.guardianService.GetGuardiansList()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -111,7 +111,7 @@ func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -141,7 +141,7 @@ func (r *guardianRoutes) DeleteGuardian(c *gin.Context) {
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -181,7 +181,7 @@ func (r *guardianRoutes) UpdateGuardian(c *gin.Context) {
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}

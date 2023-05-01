@@ -18,19 +18,18 @@ type catRoutes struct {
 }
 
 func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, logger *logrus.Logger) {
-	uR := &catRoutes{
+	cR := &catRoutes{
 		catService: catService,
 		logger:     logger,
 	}
 
 	catHandlerGroup := handler.Group("/cats")
 	{
-		catHandlerGroup.POST("", uR.CreateCat)
-		catHandlerGroup.GET("", uR.GetCatsList)
-		catHandlerGroup.GET("/:chip_number", uR.GetCat)
-		catHandlerGroup.PUT("/:chip_number", uR.UpdateCat)
-		catHandlerGroup.DELETE("/:chip_number", uR.DeleteCat)
-
+		catHandlerGroup.POST("", cR.CreateCat)
+		catHandlerGroup.GET("", cR.GetCatsList)
+		catHandlerGroup.GET("/:chip_number", cR.GetCat)
+		catHandlerGroup.PUT("/:chip_number", cR.UpdateCat)
+		catHandlerGroup.DELETE("/:chip_number", cR.DeleteCat)
 	}
 }
 
@@ -57,12 +56,12 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 	}
 
 	newCatId, err := r.catService.CreateCat(requestData)
-	if err != nil {
+	if err == nil {
 		if err == apperror.CatChipNumberAlreadyExists {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -82,7 +81,7 @@ func (r *catRoutes) CreateCat(c *gin.Context) {
 func (r *catRoutes) GetCatsList(c *gin.Context) {
 	catsList, err := r.catService.GetCatsList()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -107,7 +106,7 @@ func (r *catRoutes) GetCat(c *gin.Context) {
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -128,7 +127,7 @@ func (r *catRoutes) DeleteCat(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 	err := r.catService.DeleteCat(models.CatChipNumber{ChipNumber: chipNumber})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -159,10 +158,9 @@ func (r *catRoutes) UpdateCat(c *gin.Context) {
 	}
 	err = r.catService.UpdateCat(models.CatChipNumber{ChipNumber: chipNumber}, requestData)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.ErrorJSON{Message: apperror.InternalServerErrorMsg})
+		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
-
 }

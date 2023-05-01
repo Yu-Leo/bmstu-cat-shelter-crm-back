@@ -7,6 +7,10 @@ var (
 	GuardianNotFound           = NewAppError("Guardian not found")
 )
 
+var (
+	InternalServerError = ErrorJSON{Message: InternalServerErrorMsg}
+)
+
 const (
 	ValidationErrorMsg     = "Validation error"
 	InternalServerErrorMsg = "Internal Server Error"
@@ -25,6 +29,7 @@ type AppError struct {
 func (e *AppError) Error() string {
 	return e.Message
 }
+
 func NewAppError(message string) *AppError {
 	return &AppError{
 		Message: message,
