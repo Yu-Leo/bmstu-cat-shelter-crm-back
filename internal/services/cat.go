@@ -22,17 +22,17 @@ func (s CatService) CreateCat(requestData models.CreateCatRequest) (*models.CatC
 }
 
 func (s CatService) GetCatsList() (*[]models.Cat, error) {
-	return s.repository.GetCatsList(context.Background())
+	return s.repository.GetList(context.Background())
 }
 
 func (s CatService) GetCat(catChipNumber models.CatChipNumber) (*models.Cat, error) {
-	return s.repository.GetCat(context.Background(), catChipNumber)
+	return s.repository.Get(context.Background(), catChipNumber)
 }
 
 func (s CatService) DeleteCat(catChipNumber models.CatChipNumber) error {
-	return s.repository.DeleteCat(context.Background(), catChipNumber)
+	return s.repository.Delete(context.Background(), catChipNumber)
 }
 
 func (s CatService) UpdateCat(catChipNumber models.CatChipNumber, requestData models.CreateCatRequest) error {
-	return s.repository.UpdateCat(context.Background(), catChipNumber, requestData)
+	return s.repository.Update(context.Background(), catChipNumber, requestData)
 }

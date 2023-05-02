@@ -19,18 +19,18 @@ type guardianRoutes struct {
 }
 
 func NewGuardianRoutes(handler *gin.RouterGroup, guardianService *services.GuardianService, logger *logrus.Logger) {
-	gR := &guardianRoutes{
+	router := &guardianRoutes{
 		guardianService: guardianService,
 		logger:          logger,
 	}
 
 	handlerGroup := handler.Group("/guardians")
 	{
-		handlerGroup.POST("", gR.CreateGuardian)
-		handlerGroup.GET("", gR.GetGuardiansList)
-		handlerGroup.GET("/:id", gR.GetGuardian)
-		handlerGroup.PUT("/:id", gR.UpdateGuardian)
-		handlerGroup.DELETE("/:id", gR.DeleteGuardian)
+		handlerGroup.POST("", router.CreateGuardian)
+		handlerGroup.GET("", router.GetGuardiansList)
+		handlerGroup.GET("/:id", router.GetGuardian)
+		handlerGroup.PUT("/:id", router.UpdateGuardian)
+		handlerGroup.DELETE("/:id", router.DeleteGuardian)
 	}
 }
 

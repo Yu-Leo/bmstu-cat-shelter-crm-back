@@ -14,10 +14,10 @@ import (
 
 type GuardianRepository interface {
 	Create(context.Context, models.CreateGuardianRequest) (*models.GuardianId, error)
-	GetGuardiansList(context.Context) (*[]models.Guardian, error)
-	GetGuardian(context.Context, models.GuardianId) (*models.Guardian, error)
-	DeleteGuardian(context.Context, models.GuardianId) error
-	UpdateGuardian(context.Context, models.GuardianId, models.CreateGuardianRequest) error
+	GetList(context.Context) (*[]models.Guardian, error)
+	Get(context.Context, models.GuardianId) (*models.Guardian, error)
+	Delete(context.Context, models.GuardianId) error
+	Update(context.Context, models.GuardianId, models.CreateGuardianRequest) error
 }
 
 type guardianRepository struct {
@@ -55,7 +55,7 @@ VALUES (?) RETURNING guardians.guardian_id;`
 	return &models.GuardianId{Id: guardianId}, nil
 }
 
-func (r *guardianRepository) GetGuardiansList(ctx context.Context) (guardiansList *[]models.Guardian, err error) {
+func (r *guardianRepository) GetList(ctx context.Context) (guardiansList *[]models.Guardian, err error) {
 	q := `SELECT guardian_id, g.person_id, p.photo_url, p.firstname, p.lastname, p.patronymic, p.phone
 FROM guardians as g
 JOIN people p on p.person_id = g.person_id;`
@@ -80,7 +80,7 @@ JOIN people p on p.person_id = g.person_id;`
 	return &answer, nil
 }
 
-func (r *guardianRepository) GetGuardian(ctx context.Context, id models.GuardianId) (_ *models.Guardian, err error) {
+func (r *guardianRepository) Get(ctx context.Context, id models.GuardianId) (_ *models.Guardian, err error) {
 	q := `SELECT guardian_id, g.person_id, p.photo_url, p.firstname, p.lastname, p.patronymic, p.phone
 FROM guardians as g
 JOIN people p on p.person_id = g.person_id
@@ -96,7 +96,7 @@ WHERE g.guardian_id = ?;`
 	return &g, nil
 }
 
-func (r *guardianRepository) DeleteGuardian(ctx context.Context, id models.GuardianId) (err error) {
+func (r *guardianRepository) Delete(ctx context.Context, id models.GuardianId) (err error) {
 	var personId int
 	q1 := `SELECT person_id
 FROM guardians
@@ -121,7 +121,7 @@ WHERE person_id = ?;`
 	return err
 }
 
-func (r *guardianRepository) UpdateGuardian(ctx context.Context, id models.GuardianId, rd models.CreateGuardianRequest) (err error) {
+func (r *guardianRepository) Update(ctx context.Context, id models.GuardianId, rd models.CreateGuardianRequest) (err error) {
 	var personId int
 	q1 := `SELECT person_id
 FROM guardians

@@ -22,17 +22,17 @@ func (s GuardianService) CreateGuardian(requestData models.CreateGuardianRequest
 }
 
 func (s GuardianService) GetGuardiansList() (*[]models.Guardian, error) {
-	return s.repository.GetGuardiansList(context.Background())
+	return s.repository.GetList(context.Background())
 }
 
 func (s GuardianService) GetGuardian(id models.GuardianId) (*models.Guardian, error) {
-	return s.repository.GetGuardian(context.Background(), id)
+	return s.repository.Get(context.Background(), id)
 }
 
 func (s GuardianService) DeleteGuardian(id models.GuardianId) error {
-	return s.repository.DeleteGuardian(context.Background(), id)
+	return s.repository.Delete(context.Background(), id)
 }
 
 func (s GuardianService) UpdateGuardian(id models.GuardianId, requestData models.CreateGuardianRequest) error {
-	return s.repository.UpdateGuardian(context.Background(), id, requestData)
+	return s.repository.Update(context.Background(), id, requestData)
 }

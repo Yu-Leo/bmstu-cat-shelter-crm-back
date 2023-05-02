@@ -18,18 +18,18 @@ type residentRoutes struct {
 }
 
 func NewResidentRoutes(handler *gin.RouterGroup, residentService *services.ResidentService, logger *logrus.Logger) {
-	rR := &residentRoutes{
+	router := &residentRoutes{
 		residentService: residentService,
 		logger:          logger,
 	}
 
 	handlerGroup := handler.Group("/residents")
 	{
-		handlerGroup.POST("", rR.CreateResident)
-		handlerGroup.GET("", rR.GetResidentsList)
-		handlerGroup.GET("/:chip_number", rR.GetResident)
-		handlerGroup.PUT("/:chip_number", rR.UpdateResident)
-		handlerGroup.DELETE("/:chip_number", rR.DeleteResident)
+		handlerGroup.POST("", router.CreateResident)
+		handlerGroup.GET("", router.GetResidentsList)
+		handlerGroup.GET("/:chip_number", router.GetResident)
+		handlerGroup.PUT("/:chip_number", router.UpdateResident)
+		handlerGroup.DELETE("/:chip_number", router.DeleteResident)
 	}
 }
 

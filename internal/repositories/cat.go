@@ -14,10 +14,10 @@ import (
 
 type CatRepository interface {
 	Create(context.Context, models.CreateCatRequest) (*models.CatChipNumber, error)
-	GetCatsList(context.Context) (*[]models.Cat, error)
-	GetCat(context.Context, models.CatChipNumber) (*models.Cat, error)
-	DeleteCat(context.Context, models.CatChipNumber) error
-	UpdateCat(context.Context, models.CatChipNumber, models.CreateCatRequest) error
+	GetList(context.Context) (*[]models.Cat, error)
+	Get(context.Context, models.CatChipNumber) (*models.Cat, error)
+	Delete(context.Context, models.CatChipNumber) error
+	Update(context.Context, models.CatChipNumber, models.CreateCatRequest) error
 }
 
 type catRepository struct {
@@ -48,7 +48,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 	return &models.CatChipNumber{ChipNumber: chipNumber}, nil
 }
 
-func (r *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Cat, err error) {
+func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, err error) {
 	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats;`
 	answer := make([]models.Cat, 0)
 
@@ -71,7 +71,7 @@ func (r *catRepository) GetCatsList(ctx context.Context) (catsList *[]models.Cat
 	return &answer, nil
 }
 
-func (r *catRepository) GetCat(ctx context.Context, catChipNumber models.CatChipNumber) (*models.Cat, error) {
+func (r *catRepository) Get(ctx context.Context, catChipNumber models.CatChipNumber) (*models.Cat, error) {
 	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
 		WHERE chip_number = ?;`
 	cat := models.Cat{}
@@ -84,7 +84,7 @@ func (r *catRepository) GetCat(ctx context.Context, catChipNumber models.CatChip
 	return &cat, nil
 }
 
-func (r *catRepository) DeleteCat(ctx context.Context, catChipNumber models.CatChipNumber) error {
+func (r *catRepository) Delete(ctx context.Context, catChipNumber models.CatChipNumber) error {
 	q := `DELETE
 FROM cats
 WHERE chip_number = ?;`
@@ -92,7 +92,7 @@ WHERE chip_number = ?;`
 	return err
 }
 
-func (r *catRepository) UpdateCat(ctx context.Context, catChipNumber models.CatChipNumber, rd models.CreateCatRequest) error {
+func (r *catRepository) Update(ctx context.Context, catChipNumber models.CatChipNumber, rd models.CreateCatRequest) error {
 	q := `UPDATE cats
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`

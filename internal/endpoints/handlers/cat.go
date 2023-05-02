@@ -18,18 +18,18 @@ type catRoutes struct {
 }
 
 func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, logger *logrus.Logger) {
-	cR := &catRoutes{
+	router := &catRoutes{
 		catService: catService,
 		logger:     logger,
 	}
 
 	handlerGroup := handler.Group("/cats")
 	{
-		handlerGroup.POST("", cR.CreateCat)
-		handlerGroup.GET("", cR.GetCatsList)
-		handlerGroup.GET("/:chip_number", cR.GetCat)
-		handlerGroup.PUT("/:chip_number", cR.UpdateCat)
-		handlerGroup.DELETE("/:chip_number", cR.DeleteCat)
+		handlerGroup.POST("", router.CreateCat)
+		handlerGroup.GET("", router.GetCatsList)
+		handlerGroup.GET("/:chip_number", router.GetCat)
+		handlerGroup.PUT("/:chip_number", router.UpdateCat)
+		handlerGroup.DELETE("/:chip_number", router.DeleteCat)
 	}
 }
 
