@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -22,12 +21,12 @@ import (
 func Run(cfg *config.Config, l *logrus.Logger) {
 	storage, err := sqlitedb.NewStorage(cfg.Storage.Path)
 	if err != nil {
-		l.Error(fmt.Sprintf("SQLite database open error: %e", err))
+		l.Errorf("SQLite database open error: %e", err)
 		return
 	}
 	err = storage.Init(context.Background())
 	if err != nil {
-		l.Error(fmt.Sprintf("SQLite database init error: %e", err))
+		l.Errorf("SQLite database init error: %e", err)
 		return
 	}
 	defer storage.DB.Close()
@@ -42,24 +41,24 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 	addRouter(ginEngine, l, storage)
 
 	httpServer := httpserver.New(ginEngine, cfg.Server.Host, cfg.Server.Port)
-	l.Info(fmt.Sprintf("Run server on http://%s:%d", cfg.Server.Host, cfg.Server.Port))
-	l.Info(fmt.Sprintf("Open Swagger UI on http://%s:%d/swagger/index.html", cfg.Server.Host, cfg.Server.Port))
+	l.Infof("Run server on http://%s:%d", cfg.Server.Host, cfg.Server.Port)
+	l.Infof("Open Swagger UI on http://%s:%d/swagger/index.html", cfg.Server.Host, cfg.Server.Port)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case s := <-interrupt:
-		l.Info(fmt.Sprintf("Catch the %s signal", s.String()))
+		l.Infof("Catch the %s signal", s.String())
 	case err := <-httpServer.Notify():
-		l.Error(fmt.Sprintf("HTTPServer notify error: %e", err))
+		l.Errorf("HTTPServer notify error: %e", err)
 	}
 
 	err = httpServer.Shutdown()
 	if err == nil {
-		l.Info("Shutdown HTTPServer")
+		l.Infof("Shutdown HTTPServer")
 	} else {
-		l.Error(fmt.Sprintf("HTTPServer shutdown error: %e", err))
+		l.Errorf("HTTPServer shutdown error: %e", err)
 	}
 }
 
