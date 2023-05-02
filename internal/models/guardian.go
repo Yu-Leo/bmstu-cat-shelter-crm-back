@@ -1,12 +1,12 @@
 package models
 
-type Guardian struct {
-	GuardianId int `json:"id"`
-	Person
-}
-
 type GuardianId struct {
 	Id int `json:"id"`
+}
+
+type Guardian struct {
+	GuardianId
+	Person
 }
 
 type CreateGuardianRequest struct {
