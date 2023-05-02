@@ -70,7 +70,7 @@ JOIN people p on p.person_id = g.person_id;`
 
 	for rows.Next() {
 		o := models.Guardian{}
-		err = rows.Scan(&o.GuardianId, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
+		err = rows.Scan(&o.Id, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 		if err != nil {
 			return nil, err
 		}
@@ -88,7 +88,7 @@ WHERE g.guardian_id = ?;`
 
 	o := models.Guardian{}
 	err = r.storage.DB.QueryRowContext(ctx, q, id).Scan(
-		&o.GuardianId, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
+		&o.Id, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.GuardianNotFound

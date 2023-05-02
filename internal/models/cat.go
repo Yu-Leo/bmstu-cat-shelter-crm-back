@@ -5,7 +5,7 @@ import "time"
 type CatChipNumber string
 
 type Cat struct {
-	CatChipNumber            CatChipNumber `json:"chipNumber"`
+	ChipNumber               CatChipNumber `json:"chipNumber"`
 	Nickname                 string        `json:"nickname"`
 	PhotoUrl                 string        `json:"photoUrl"`
 	Gender                   string        `json:"gender"`
@@ -14,7 +14,7 @@ type Cat struct {
 }
 
 type CreateCatRequest struct {
-	CatChipNumber            CatChipNumber `json:"chipNumber"`
+	ChipNumber               CatChipNumber `json:"chipNumber"`
 	Nickname                 string        `json:"nickname" binding:"required"`
 	PhotoUrl                 string        `json:"photoUrl"`
 	Gender                   string        `json:"gender"`

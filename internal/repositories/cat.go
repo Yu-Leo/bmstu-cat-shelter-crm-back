@@ -37,7 +37,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 	var chipNumber models.CatChipNumber
 
 	err = r.storage.DB.QueryRowContext(ctx, q,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -62,7 +62,7 @@ func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, er
 	for rows.Next() {
 		o := models.Cat{}
 		err = rows.Scan(
-			&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.CatChipNumber, &o.DateOfAdmissionToShelter)
+			&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.ChipNumber, &o.DateOfAdmissionToShelter)
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func (r *catRepository) Get(ctx context.Context, catChipNumber models.CatChipNum
 		WHERE chip_number = ?;`
 	o := models.Cat{}
 	err := r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(
-		&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.CatChipNumber, &o.DateOfAdmissionToShelter)
+		&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.ChipNumber, &o.DateOfAdmissionToShelter)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.CatNotFound
@@ -99,6 +99,6 @@ func (r *catRepository) Update(ctx context.Context, catChipNumber models.CatChip
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 	_, err := r.storage.DB.ExecContext(ctx, q, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age,
-		rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
+		rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

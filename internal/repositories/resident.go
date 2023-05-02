@@ -37,7 +37,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 	var chipNumber models.CatChipNumber
 
 	err = r.storage.DB.QueryRowContext(ctx, q1,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -77,7 +77,7 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 
 	for rows.Next() {
 		o := models.Resident{}
-		err = rows.Scan(&o.CatChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
+		err = rows.Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
 			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
 		if err != nil {
 			return nil, err
@@ -96,7 +96,7 @@ JOIN cats c on c.chip_number = r.cat_chip_number
 WHERE r.cat_chip_number = ?;`
 
 	o := models.Resident{}
-	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.CatChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
+	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
 		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
 	if err == sql.ErrNoRows {
 		return nil, apperror.ResidentNotFound
@@ -126,7 +126,7 @@ func (r *residentRepository) Update(ctx context.Context, catChipNumber models.Ca
 SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?
 WHERE cat_chip_number = ?;`
 
-	_, err = r.storage.DB.ExecContext(ctx, q1, rd.CatChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q1, rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -135,6 +135,6 @@ WHERE cat_chip_number = ?;`
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 
-	_, err = r.storage.DB.ExecContext(ctx, q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }
