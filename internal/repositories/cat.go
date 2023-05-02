@@ -50,9 +50,9 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
 func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, err error) {
 	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats;`
-	answer := make([]models.Cat, 0)
+	objects := make([]models.Cat, 0)
 
-	rows, err := r.storage.DB.Query(q)
+	rows, err := r.storage.DB.QueryContext(ctx, q)
 
 	if err != nil {
 		return nil, err
@@ -60,37 +60,37 @@ func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, er
 	defer rows.Close()
 
 	for rows.Next() {
-		cat := models.Cat{}
+		o := models.Cat{}
 		err = rows.Scan(
-			&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.CatChipNumber, &cat.DateOfAdmissionToShelter)
+			&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.CatChipNumber, &o.DateOfAdmissionToShelter)
 		if err != nil {
 			return nil, err
 		}
-		answer = append(answer, cat)
+		objects = append(objects, o)
 	}
 
-	return &answer, nil
+	return &objects, nil
 }
 
 func (r *catRepository) Get(ctx context.Context, catChipNumber models.CatChipNumber) (*models.Cat, error) {
 	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
 		WHERE chip_number = ?;`
-	cat := models.Cat{}
-	err := r.storage.DB.QueryRow(q, catChipNumber).Scan(
-		&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.CatChipNumber, &cat.DateOfAdmissionToShelter)
+	o := models.Cat{}
+	err := r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(
+		&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.CatChipNumber, &o.DateOfAdmissionToShelter)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.CatNotFound
 	}
 
-	return &cat, nil
+	return &o, nil
 }
 
 func (r *catRepository) Delete(ctx context.Context, catChipNumber models.CatChipNumber) error {
 	q := `DELETE
 FROM cats
 WHERE chip_number = ?;`
-	_, err := r.storage.DB.Exec(q, catChipNumber)
+	_, err := r.storage.DB.ExecContext(ctx, q, catChipNumber)
 	return err
 }
 
@@ -98,7 +98,7 @@ func (r *catRepository) Update(ctx context.Context, catChipNumber models.CatChip
 	q := `UPDATE cats
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
-	_, err := r.storage.DB.Exec(q, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age,
+	_, err := r.storage.DB.ExecContext(ctx, q, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age,
 		rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

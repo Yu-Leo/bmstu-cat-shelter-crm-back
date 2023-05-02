@@ -36,33 +36,18 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 	if cfg.Server.Mode == gin.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode)
 	}
-
 	ginEngine := gin.Default()
-	addRouter(ginEngine, l, storage)
+	addRouters(ginEngine, l, storage)
 
 	httpServer := httpserver.New(ginEngine, cfg.Server.Host, cfg.Server.Port)
+
 	l.Infof("Run server on http://%s:%d", cfg.Server.Host, cfg.Server.Port)
 	l.Infof("Open Swagger UI on http://%s:%d/swagger/index.html", cfg.Server.Host, cfg.Server.Port)
 
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
-
-	select {
-	case s := <-interrupt:
-		l.Infof("Catch the %s signal", s.String())
-	case err := <-httpServer.Notify():
-		l.Errorf("HTTPServer notify error: %e", err)
-	}
-
-	err = httpServer.Shutdown()
-	if err == nil {
-		l.Infof("Shutdown HTTPServer")
-	} else {
-		l.Errorf("HTTPServer shutdown error: %e", err)
-	}
+	trackSignals(httpServer, l)
 }
 
-func addRouter(ginEngine *gin.Engine, logger *logrus.Logger, storage *sqlitedb.Storage) {
+func addRouters(ginEngine *gin.Engine, logger *logrus.Logger, storage *sqlitedb.Storage) {
 	catRepository := repositories.NewSqliteCatRepository(storage)
 	guardianRepository := repositories.NewSqliteGuardianRepository(storage)
 	residentRepository := repositories.NewSqliteResidentRepository(storage)
@@ -74,4 +59,23 @@ func addRouter(ginEngine *gin.Engine, logger *logrus.Logger, storage *sqlitedb.S
 		logger)
 
 	endpoints.NewRouter(ginEngine, resolver)
+}
+
+func trackSignals(server *httpserver.Server, l *logrus.Logger) {
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case s := <-interrupt:
+		l.Infof("Catch the %s signal", s.String())
+	case err := <-server.Notify():
+		l.Errorf("HTTPServer notify error: %e", err)
+	}
+
+	err := server.Shutdown()
+	if err == nil {
+		l.Infof("Shutdown HTTPServer")
+	} else {
+		l.Errorf("HTTPServer shutdown error: %e", err)
+	}
 }

@@ -50,7 +50,7 @@ type healthResponse struct {
 // @Success     200 {object} healthResponse
 // @Router      /health [get]
 func health(c *gin.Context) {
-	var a = healthResponse{Status: 200,
+	var a = healthResponse{Status: http.StatusOK,
 		Message: "OK"}
 	c.JSON(http.StatusOK, a)
 }

@@ -66,9 +66,9 @@ func (r *residentRepository) GetList(ctx context.Context) (list *[]models.Reside
        c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id
 FROM residents as r
 JOIN cats c on c.chip_number = r.cat_chip_number;`
-	answer := make([]models.Resident, 0)
+	objects := make([]models.Resident, 0)
 
-	rows, err := r.storage.DB.Query(q)
+	rows, err := r.storage.DB.QueryContext(ctx, q)
 
 	if err != nil {
 		return nil, err
@@ -76,16 +76,16 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 	defer rows.Close()
 
 	for rows.Next() {
-		ru := models.Resident{}
-		err = rows.Scan(&ru.CatChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
-			&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
+		o := models.Resident{}
+		err = rows.Scan(&o.CatChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
+			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
 		if err != nil {
 			return nil, err
 		}
-		answer = append(answer, ru)
+		objects = append(objects, o)
 	}
 
-	return &answer, nil
+	return &objects, nil
 }
 
 func (r *residentRepository) Get(ctx context.Context, catChipNumber models.CatChipNumber) (_ *models.Resident, err error) {
@@ -95,21 +95,21 @@ FROM residents as r
 JOIN cats c on c.chip_number = r.cat_chip_number
 WHERE r.cat_chip_number = ?;`
 
-	ru := models.Resident{}
-	err = r.storage.DB.QueryRow(q, catChipNumber).Scan(&ru.CatChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
-		&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
+	o := models.Resident{}
+	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.CatChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
+		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
 	if err == sql.ErrNoRows {
 		return nil, apperror.ResidentNotFound
 	}
 
-	return &ru, nil
+	return &o, nil
 }
 
 func (r *residentRepository) Delete(ctx context.Context, catChipNumber models.CatChipNumber) (err error) {
 	q1 := `DELETE
 FROM residents
 WHERE cat_chip_number = ?;`
-	_, err = r.storage.DB.Exec(q1, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q1, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ WHERE cat_chip_number = ?;`
 	q2 := `DELETE
 FROM cats
 WHERE chip_number = ?;`
-	_, err = r.storage.DB.Exec(q2, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q2, catChipNumber)
 	return err
 }
 
@@ -126,7 +126,7 @@ func (r *residentRepository) Update(ctx context.Context, catChipNumber models.Ca
 SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?
 WHERE cat_chip_number = ?;`
 
-	_, err = r.storage.DB.Exec(q1, rd.CatChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q1, rd.CatChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -135,6 +135,6 @@ WHERE cat_chip_number = ?;`
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 
-	_, err = r.storage.DB.Exec(q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

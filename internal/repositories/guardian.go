@@ -59,9 +59,9 @@ func (r *guardianRepository) GetList(ctx context.Context) (guardiansList *[]mode
 	q := `SELECT guardian_id, g.person_id, p.photo_url, p.firstname, p.lastname, p.patronymic, p.phone
 FROM guardians as g
 JOIN people p on p.person_id = g.person_id;`
-	answer := make([]models.Guardian, 0)
+	objects := make([]models.Guardian, 0)
 
-	rows, err := r.storage.DB.Query(q)
+	rows, err := r.storage.DB.QueryContext(ctx, q)
 
 	if err != nil {
 		return nil, err
@@ -69,15 +69,15 @@ JOIN people p on p.person_id = g.person_id;`
 	defer rows.Close()
 
 	for rows.Next() {
-		gu := models.Guardian{}
-		err = rows.Scan(&gu.GuardianId, &gu.PersonId, &gu.PhotoUrl, &gu.Firstname, &gu.Lastname, &gu.Patronymic, &gu.Phone)
+		o := models.Guardian{}
+		err = rows.Scan(&o.GuardianId, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 		if err != nil {
 			return nil, err
 		}
-		answer = append(answer, gu)
+		objects = append(objects, o)
 	}
 
-	return &answer, nil
+	return &objects, nil
 }
 
 func (r *guardianRepository) Get(ctx context.Context, id models.GuardianId) (_ *models.Guardian, err error) {
@@ -86,14 +86,15 @@ FROM guardians as g
 JOIN people p on p.person_id = g.person_id
 WHERE g.guardian_id = ?;`
 
-	g := models.Guardian{}
-	err = r.storage.DB.QueryRow(q, id).Scan(&g.GuardianId, &g.PersonId, &g.PhotoUrl, &g.Firstname, &g.Lastname, &g.Patronymic, &g.Phone)
+	o := models.Guardian{}
+	err = r.storage.DB.QueryRowContext(ctx, q, id).Scan(
+		&o.GuardianId, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.GuardianNotFound
 	}
 
-	return &g, nil
+	return &o, nil
 }
 
 func (r *guardianRepository) Delete(ctx context.Context, id models.GuardianId) (err error) {
@@ -101,7 +102,7 @@ func (r *guardianRepository) Delete(ctx context.Context, id models.GuardianId) (
 	q1 := `SELECT person_id
 FROM guardians
 WHERE guardian_id = ?;`
-	err = r.storage.DB.QueryRow(q1, id).Scan(&personId)
+	err = r.storage.DB.QueryRowContext(ctx, q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
 		return apperror.GuardianNotFound
 	}
@@ -109,7 +110,7 @@ WHERE guardian_id = ?;`
 	q2 := `DELETE
 FROM guardians
 WHERE guardian_id = ?;`
-	_, err = r.storage.DB.Exec(q2, id)
+	_, err = r.storage.DB.ExecContext(ctx, q2, id)
 	if err != nil {
 		return err
 	}
@@ -117,7 +118,7 @@ WHERE guardian_id = ?;`
 	q3 := `DELETE
 FROM people
 WHERE person_id = ?;`
-	_, err = r.storage.DB.Exec(q3, personId)
+	_, err = r.storage.DB.ExecContext(ctx, q3, personId)
 	return err
 }
 
@@ -126,7 +127,7 @@ func (r *guardianRepository) Update(ctx context.Context, id models.GuardianId, r
 	q1 := `SELECT person_id
 FROM guardians
 WHERE guardian_id = ?;`
-	err = r.storage.DB.QueryRow(q1, id).Scan(&personId)
+	err = r.storage.DB.QueryRowContext(ctx, q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
 		return apperror.GuardianNotFound
 	}
@@ -135,7 +136,7 @@ WHERE guardian_id = ?;`
 SET photo_url = ?, firstname = ?, lastname = ?, patronymic = ?, phone = ?
 WHERE person_id = ?;`
 
-	_, err = r.storage.DB.Exec(q2, rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic,
+	_, err = r.storage.DB.ExecContext(ctx, q2, rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic,
 		rd.Phone, personId)
 	return err
 }
