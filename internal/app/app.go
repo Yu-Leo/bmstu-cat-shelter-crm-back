@@ -63,14 +63,16 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 	}
 }
 
-func addRouter(ginEngine *gin.Engine, l *logrus.Logger, storage *sqlitedb.Storage) {
+func addRouter(ginEngine *gin.Engine, logger *logrus.Logger, storage *sqlitedb.Storage) {
 	catRepository := repositories.NewSqliteCatRepository(storage)
 	guardianRepository := repositories.NewSqliteGuardianRepository(storage)
 	residentRepository := repositories.NewSqliteResidentRepository(storage)
 
-	catService := services.NewCatService(catRepository)
-	guardianService := services.NewGuardianService(guardianRepository)
-	residentService := services.NewResidentService(residentRepository)
+	resolver := services.NewResolver(
+		services.NewCatService(catRepository),
+		services.NewGuardianService(guardianRepository),
+		services.NewResidentService(residentRepository),
+		logger)
 
-	endpoints.NewRouter(ginEngine, l, catService, guardianService, residentService)
+	endpoints.NewRouter(ginEngine, resolver)
 }

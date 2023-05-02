@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -24,20 +23,16 @@ import (
 // @host      127.0.0.1:9000
 // @BasePath  /
 
-func NewRouter(ginEngine *gin.Engine,
-	logger *logrus.Logger,
-	catService *services.CatService,
-	guardianServer *services.GuardianService,
-	residentService *services.ResidentService) {
+func NewRouter(ginEngine *gin.Engine, resolver *services.Resolver) {
 
 	// Routers
 	ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	ginEngine.GET("/health", health)
 	router := ginEngine.Group("")
 	{
-		handlers.NewCatRoutes(router, catService, logger)
-		handlers.NewGuardianRoutes(router, guardianServer, logger)
-		handlers.NewResidentRoutes(router, residentService, logger)
+		handlers.NewCatRoutes(router, resolver.CatService, resolver.Logger)
+		handlers.NewGuardianRoutes(router, resolver.GuardianService, resolver.Logger)
+		handlers.NewResidentRoutes(router, resolver.ResidentService, resolver.Logger)
 	}
 }
 
