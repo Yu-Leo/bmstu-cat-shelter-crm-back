@@ -27,7 +27,8 @@ import (
 func NewRouter(ginEngine *gin.Engine,
 	logger *logrus.Logger,
 	catService *services.CatService,
-	guardianServer *services.GuardianService) {
+	guardianServer *services.GuardianService,
+	residentService *services.ResidentService) {
 
 	// Routers
 	ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -36,6 +37,7 @@ func NewRouter(ginEngine *gin.Engine,
 	{
 		handlers.NewCatRoutes(router, catService, logger)
 		handlers.NewGuardianRoutes(router, guardianServer, logger)
+		handlers.NewResidentRoutes(router, residentService, logger)
 	}
 }
 

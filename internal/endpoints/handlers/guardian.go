@@ -24,13 +24,13 @@ func NewGuardianRoutes(handler *gin.RouterGroup, guardianService *services.Guard
 		logger:          logger,
 	}
 
-	catHandlerGroup := handler.Group("/guardians")
+	handlerGroup := handler.Group("/guardians")
 	{
-		catHandlerGroup.POST("", gR.CreateGuardian)
-		catHandlerGroup.GET("", gR.GetGuardiansList)
-		catHandlerGroup.GET("/:id", gR.GetGuardian)
-		catHandlerGroup.PUT("/:id", gR.UpdateGuardian)
-		catHandlerGroup.DELETE("/:id", gR.DeleteGuardian)
+		handlerGroup.POST("", gR.CreateGuardian)
+		handlerGroup.GET("", gR.GetGuardiansList)
+		handlerGroup.GET("/:id", gR.GetGuardian)
+		handlerGroup.PUT("/:id", gR.UpdateGuardian)
+		handlerGroup.DELETE("/:id", gR.DeleteGuardian)
 	}
 }
 
@@ -40,7 +40,7 @@ func NewGuardianRoutes(handler *gin.RouterGroup, guardianService *services.Guard
 // @Tags  	    guardians
 // @Accept      json
 // @Produce     json
-// @Param createCatObject body models.CreateGuardianRequest true "Parameters for creating a guardian."
+// @Param createGuardianObject body models.CreateGuardianRequest true "Parameters for creating a guardian."
 // @Success     201 {object} models.GuardianId
 // @Failure	    400 {object} apperror.ErrorJSON
 // @Failure	    500 {object} apperror.ErrorJSON
@@ -105,7 +105,7 @@ func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
 	}
-	cat, err := r.guardianService.GetGuardian(models.GuardianId{Id: id})
+	guardian, err := r.guardianService.GetGuardian(models.GuardianId{Id: id})
 	if err == apperror.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
@@ -115,7 +115,7 @@ func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 		r.logger.Error(err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, *cat)
+	c.JSON(http.StatusOK, *guardian)
 }
 
 // DeleteGuardian

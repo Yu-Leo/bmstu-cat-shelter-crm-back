@@ -64,6 +64,31 @@ definitions:
       photoUrl:
         type: string
     type: object
+  models.CreateResidentRequest:
+    properties:
+      VKAlbumUrl:
+        type: string
+      age:
+        type: integer
+      aggressiveness:
+        type: boolean
+      booking:
+        type: boolean
+      chipNumber:
+        type: string
+      dateOfAdmissionToShelter:
+        type: string
+      gender:
+        type: string
+      guardianId:
+        type: integer
+      nickname:
+        type: string
+      photoUrl:
+        type: string
+    required:
+    - nickname
+    type: object
   models.Guardian:
     properties:
       firstname:
@@ -83,6 +108,29 @@ definitions:
     properties:
       id:
         type: integer
+    type: object
+  models.Resident:
+    properties:
+      VKAlbumUrl:
+        type: string
+      age:
+        type: integer
+      aggressiveness:
+        type: boolean
+      booking:
+        type: boolean
+      chipNumber:
+        type: string
+      dateOfAdmissionToShelter:
+        type: string
+      gender:
+        type: string
+      guardianId:
+        type: integer
+      nickname:
+        type: string
+      photoUrl:
+        type: string
     type: object
 host: 127.0.0.1:9000
 info:
@@ -245,7 +293,7 @@ paths:
       parameters:
       - description: Parameters for creating a guardian.
         in: body
-        name: createCatObject
+        name: createGuardianObject
         required: true
         schema:
           $ref: '#/definitions/models.CreateGuardianRequest'
@@ -357,4 +405,129 @@ paths:
       summary: Health check
       tags:
       - health
+  /residents:
+    get:
+      consumes:
+      - application/json
+      operationId: getResidentsList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Resident'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Get residents list
+      tags:
+      - residents
+    post:
+      consumes:
+      - application/json
+      operationId: createResident
+      parameters:
+      - description: Parameters for creating a resident.
+        in: body
+        name: createResidentObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateResidentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CatChipNumber'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Create resident
+      tags:
+      - residents
+  /residents/{chip_number}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Delete resident
+      tags:
+      - residents
+    get:
+      consumes:
+      - application/json
+      operationId: getResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Resident'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Get resident
+      tags:
+      - residents
+    put:
+      consumes:
+      - application/json
+      operationId: updateResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      - description: Parameters for updating a resident.
+        in: body
+        name: createResidentObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateResidentRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apperror.ErrorJSON'
+      summary: Update resident
+      tags:
+      - residents
 swagger: "2.0"

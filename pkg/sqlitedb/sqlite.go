@@ -33,6 +33,16 @@ CREATE TABLE cats (
     chip_number text UNIQUE NOT NULL CHECK(LENGTH(chip_number) == 15) PRIMARY KEY,
     date_of_admission_to_shelter date NOT NULL);
 
+DROP TABLE IF EXISTS residents;
+CREATE TABLE residents (
+	cat_chip_number text UNIQUE NOT NULL PRIMARY KEY,
+	booking bool,
+	aggressiveness bool,
+	vk_album_url text,
+	guardian_id integer,
+    FOREIGN KEY (cat_chip_number) REFERENCES cats(chip_number),
+    FOREIGN KEY (guardian_id) REFERENCES guardians(guardian_id));
+
 DROP TABLE IF EXISTS people;
 CREATE TABLE people (
     person_id integer UNIQUE NOT NULL PRIMARY KEY,

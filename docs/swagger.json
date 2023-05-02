@@ -246,7 +246,7 @@
                 "parameters": [
                     {
                         "description": "Parameters for creating a guardian.",
-                        "name": "createCatObject",
+                        "name": "createGuardianObject",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -411,6 +411,195 @@
                     }
                 }
             }
+        },
+        "/residents": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Get residents list",
+                "operationId": "getResidentsList",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Resident"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Create resident",
+                "operationId": "createResident",
+                "parameters": [
+                    {
+                        "description": "Parameters for creating a resident.",
+                        "name": "createResidentObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateResidentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CatChipNumber"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/residents/{chip_number}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Get resident",
+                "operationId": "getResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Resident"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Update resident",
+                "operationId": "updateResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Parameters for updating a resident.",
+                        "name": "createResidentObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateResidentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Delete resident",
+                "operationId": "deleteResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apperror.ErrorJSON"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -513,6 +702,44 @@
                 }
             }
         },
+        "models.CreateResidentRequest": {
+            "type": "object",
+            "required": [
+                "nickname"
+            ],
+            "properties": {
+                "VKAlbumUrl": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "aggressiveness": {
+                    "type": "boolean"
+                },
+                "booking": {
+                    "type": "boolean"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "guardianId": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Guardian": {
             "type": "object",
             "properties": {
@@ -541,6 +768,41 @@
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Resident": {
+            "type": "object",
+            "properties": {
+                "VKAlbumUrl": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "aggressiveness": {
+                    "type": "boolean"
+                },
+                "booking": {
+                    "type": "boolean"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "guardianId": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
                 }
             }
         }

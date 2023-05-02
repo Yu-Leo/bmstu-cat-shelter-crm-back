@@ -23,13 +23,13 @@ func NewCatRoutes(handler *gin.RouterGroup, catService *services.CatService, log
 		logger:     logger,
 	}
 
-	catHandlerGroup := handler.Group("/cats")
+	handlerGroup := handler.Group("/cats")
 	{
-		catHandlerGroup.POST("", cR.CreateCat)
-		catHandlerGroup.GET("", cR.GetCatsList)
-		catHandlerGroup.GET("/:chip_number", cR.GetCat)
-		catHandlerGroup.PUT("/:chip_number", cR.UpdateCat)
-		catHandlerGroup.DELETE("/:chip_number", cR.DeleteCat)
+		handlerGroup.POST("", cR.CreateCat)
+		handlerGroup.GET("", cR.GetCatsList)
+		handlerGroup.GET("/:chip_number", cR.GetCat)
+		handlerGroup.PUT("/:chip_number", cR.UpdateCat)
+		handlerGroup.DELETE("/:chip_number", cR.DeleteCat)
 	}
 }
 
