@@ -13,7 +13,7 @@ import (
 )
 
 type CatRepository interface {
-	Create(context.Context, models.CreateCatRequest) (*models.CatChipNumber, error)
+	Create(context.Context, models.CreateCatRequest) (models.CatChipNumber, error)
 	GetList(context.Context) (*[]models.Cat, error)
 	Get(context.Context, models.CatChipNumber) (*models.Cat, error)
 	Delete(context.Context, models.CatChipNumber) error
@@ -30,22 +30,22 @@ func NewSqliteCatRepository(storage *sqlitedb.Storage) CatRepository {
 	}
 }
 
-func (r *catRepository) Create(ctx context.Context, rd models.CreateCatRequest) (catId *models.CatChipNumber, err error) {
+func (r *catRepository) Create(ctx context.Context, rd models.CreateCatRequest) (catId models.CatChipNumber, err error) {
 	q := `INSERT INTO cats (nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter)
 VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
-	var chipNumber string
+	var chipNumber models.CatChipNumber
 
 	err = r.storage.DB.QueryRowContext(ctx, q,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return nil, apperror.CatChipNumberAlreadyExists
+			return "", apperror.CatChipNumberAlreadyExists
 		}
-		return nil, err
+		return "", err
 	}
-	return &models.CatChipNumber{ChipNumber: chipNumber}, nil
+	return chipNumber, nil
 }
 
 func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, err error) {
@@ -61,7 +61,8 @@ func (r *catRepository) GetList(ctx context.Context) (catsList *[]models.Cat, er
 
 	for rows.Next() {
 		cat := models.Cat{}
-		err = rows.Scan(&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
+		err = rows.Scan(
+			&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.CatChipNumber, &cat.DateOfAdmissionToShelter)
 		if err != nil {
 			return nil, err
 		}
@@ -75,7 +76,8 @@ func (r *catRepository) Get(ctx context.Context, catChipNumber models.CatChipNum
 	q := `SELECT nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter FROM cats
 		WHERE chip_number = ?;`
 	cat := models.Cat{}
-	err := r.storage.DB.QueryRow(q, catChipNumber.ChipNumber).Scan(&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.ChipNumber, &cat.DateOfAdmissionToShelter)
+	err := r.storage.DB.QueryRow(q, catChipNumber).Scan(
+		&cat.Nickname, &cat.PhotoUrl, &cat.Gender, &cat.Age, &cat.CatChipNumber, &cat.DateOfAdmissionToShelter)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.CatNotFound
@@ -88,7 +90,7 @@ func (r *catRepository) Delete(ctx context.Context, catChipNumber models.CatChip
 	q := `DELETE
 FROM cats
 WHERE chip_number = ?;`
-	_, err := r.storage.DB.Exec(q, catChipNumber.ChipNumber)
+	_, err := r.storage.DB.Exec(q, catChipNumber)
 	return err
 }
 
@@ -97,6 +99,6 @@ func (r *catRepository) Update(ctx context.Context, catChipNumber models.CatChip
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 	_, err := r.storage.DB.Exec(q, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age,
-		rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber.ChipNumber)
+		rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

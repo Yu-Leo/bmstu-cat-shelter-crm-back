@@ -17,7 +17,7 @@ func NewGuardianService(guardianRepository repositories.GuardianRepository) *Gua
 	}
 }
 
-func (s GuardianService) CreateGuardian(requestData models.CreateGuardianRequest) (*models.GuardianId, error) {
+func (s GuardianService) CreateGuardian(requestData models.CreateGuardianRequest) (models.GuardianId, error) {
 	return s.repository.Create(context.Background(), requestData)
 }
 

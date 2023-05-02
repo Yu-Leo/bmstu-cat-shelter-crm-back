@@ -29,11 +29,6 @@ definitions:
       photoUrl:
         type: string
     type: object
-  models.CatChipNumber:
-    properties:
-      chipNumber:
-        type: string
-    type: object
   models.CreateCatRequest:
     properties:
       age:
@@ -104,11 +99,6 @@ definitions:
       photoUrl:
         type: string
     type: object
-  models.GuardianId:
-    properties:
-      id:
-        type: integer
-    type: object
   models.Resident:
     properties:
       VKAlbumUrl:
@@ -178,7 +168,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.CatChipNumber'
+            type: string
         "400":
           description: Bad Request
           schema:
@@ -303,7 +293,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.GuardianId'
+            type: integer
         "400":
           description: Bad Request
           schema:
@@ -443,7 +433,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.CatChipNumber'
+            type: string
         "400":
           description: Bad Request
           schema:

@@ -1,11 +1,9 @@
 package models
 
-type GuardianId struct {
-	Id int `json:"id"`
-}
+type GuardianId int
 
 type Guardian struct {
-	GuardianId
+	GuardianId GuardianId `json:"id"`
 	Person
 }
 

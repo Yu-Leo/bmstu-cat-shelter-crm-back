@@ -17,7 +17,7 @@ func NewResidentService(residentRepository repositories.ResidentRepository) *Res
 	}
 }
 
-func (s ResidentService) CreateResident(requestData models.CreateResidentRequest) (*models.CatChipNumber, error) {
+func (s ResidentService) CreateResident(requestData models.CreateResidentRequest) (models.CatChipNumber, error) {
 	return s.repository.Create(context.Background(), requestData)
 }
 

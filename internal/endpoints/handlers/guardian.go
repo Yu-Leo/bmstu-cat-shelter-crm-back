@@ -67,7 +67,7 @@ func (r *guardianRoutes) CreateGuardian(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, *newGuardianId)
+	c.JSON(http.StatusCreated, newGuardianId)
 }
 
 // GetGuardiansList
@@ -105,7 +105,7 @@ func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
 	}
-	guardian, err := r.guardianService.GetGuardian(models.GuardianId{Id: id})
+	guardian, err := r.guardianService.GetGuardian(models.GuardianId(id))
 	if err == apperror.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
@@ -135,7 +135,7 @@ func (r *guardianRoutes) DeleteGuardian(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
 	}
 
-	err = r.guardianService.DeleteGuardian(models.GuardianId{Id: id})
+	err = r.guardianService.DeleteGuardian(models.GuardianId(id))
 	if err == apperror.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
@@ -175,7 +175,7 @@ func (r *guardianRoutes) UpdateGuardian(c *gin.Context) {
 		return
 	}
 
-	err = r.guardianService.UpdateGuardian(models.GuardianId{Id: id}, requestData)
+	err = r.guardianService.UpdateGuardian(models.GuardianId(id), requestData)
 	if err == apperror.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return

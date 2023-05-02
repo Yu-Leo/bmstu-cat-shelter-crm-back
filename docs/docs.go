@@ -77,7 +77,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.CatChipNumber"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -266,7 +266,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.GuardianId"
+                            "type": "integer"
                         }
                     },
                     "400": {
@@ -478,7 +478,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.CatChipNumber"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -656,14 +656,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CatChipNumber": {
-            "type": "object",
-            "properties": {
-                "chipNumber": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CreateCatRequest": {
             "type": "object",
             "required": [
@@ -768,14 +760,6 @@ const docTemplate = `{
                 },
                 "photoUrl": {
                     "type": "string"
-                }
-            }
-        },
-        "models.GuardianId": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
                 }
             }
         },

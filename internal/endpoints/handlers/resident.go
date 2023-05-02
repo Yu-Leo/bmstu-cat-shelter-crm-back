@@ -66,7 +66,7 @@ func (r *residentRoutes) CreateResident(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, *newResidentId)
+	c.JSON(http.StatusCreated, newResidentId)
 }
 
 // GetResidentsList
@@ -100,7 +100,7 @@ func (r *residentRoutes) GetResidentsList(c *gin.Context) {
 // @Router      /residents/{chip_number} [get]
 func (r *residentRoutes) GetResident(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
-	resident, err := r.residentService.GetResident(models.CatChipNumber{ChipNumber: chipNumber})
+	resident, err := r.residentService.GetResident(models.CatChipNumber(chipNumber))
 	if err == apperror.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
@@ -126,7 +126,7 @@ func (r *residentRoutes) GetResident(c *gin.Context) {
 func (r *residentRoutes) DeleteResident(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 
-	err := r.residentService.DeleteResident(models.CatChipNumber{ChipNumber: chipNumber})
+	err := r.residentService.DeleteResident(models.CatChipNumber(chipNumber))
 	if err == apperror.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
@@ -162,7 +162,7 @@ func (r *residentRoutes) UpdateResident(c *gin.Context) {
 		return
 	}
 
-	err = r.residentService.UpdateResident(models.CatChipNumber{ChipNumber: chipNumber}, requestData)
+	err = r.residentService.UpdateResident(models.CatChipNumber(chipNumber), requestData)
 	if err == apperror.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return

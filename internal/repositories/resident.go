@@ -13,7 +13,7 @@ import (
 )
 
 type ResidentRepository interface {
-	Create(context.Context, models.CreateResidentRequest) (*models.CatChipNumber, error)
+	Create(context.Context, models.CreateResidentRequest) (models.CatChipNumber, error)
 	GetList(context.Context) (*[]models.Resident, error)
 	Get(context.Context, models.CatChipNumber) (*models.Resident, error)
 	Delete(context.Context, models.CatChipNumber) error
@@ -30,20 +30,20 @@ func NewSqliteResidentRepository(storage *sqlitedb.Storage) ResidentRepository {
 	}
 }
 
-func (r *residentRepository) Create(ctx context.Context, rd models.CreateResidentRequest) (_ *models.CatChipNumber, err error) {
+func (r *residentRepository) Create(ctx context.Context, rd models.CreateResidentRequest) (_ models.CatChipNumber, err error) {
 	q1 := `INSERT INTO cats (nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter)
 VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
-	var chipNumber string
+	var chipNumber models.CatChipNumber
 
 	err = r.storage.DB.QueryRowContext(ctx, q1,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return nil, apperror.CatChipNumberAlreadyExists
+			return "", apperror.CatChipNumberAlreadyExists
 		}
-		return nil, err
+		return "", err
 	}
 
 	q2 := `INSERT INTO residents (cat_chip_number, booking, aggressiveness, vk_album_url, guardian_id)
@@ -54,11 +54,11 @@ VALUES (?, ?, ?, ?, ?); `
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return nil, apperror.CatChipNumberAlreadyExists
+			return "", apperror.CatChipNumberAlreadyExists
 		}
-		return nil, err
+		return "", err
 	}
-	return &models.CatChipNumber{ChipNumber: chipNumber}, nil
+	return chipNumber, nil
 }
 
 func (r *residentRepository) GetList(ctx context.Context) (list *[]models.Resident, err error) {
@@ -77,7 +77,7 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 
 	for rows.Next() {
 		ru := models.Resident{}
-		err = rows.Scan(&ru.ChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
+		err = rows.Scan(&ru.CatChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
 			&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
 		if err != nil {
 			return nil, err
@@ -96,7 +96,7 @@ JOIN cats c on c.chip_number = r.cat_chip_number
 WHERE r.cat_chip_number = ?;`
 
 	ru := models.Resident{}
-	err = r.storage.DB.QueryRow(q, catChipNumber.ChipNumber).Scan(&ru.ChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
+	err = r.storage.DB.QueryRow(q, catChipNumber).Scan(&ru.CatChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
 		&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
 	if err == sql.ErrNoRows {
 		return nil, apperror.ResidentNotFound
@@ -109,7 +109,7 @@ func (r *residentRepository) Delete(ctx context.Context, catChipNumber models.Ca
 	q1 := `DELETE
 FROM residents
 WHERE cat_chip_number = ?;`
-	_, err = r.storage.DB.Exec(q1, catChipNumber.ChipNumber)
+	_, err = r.storage.DB.Exec(q1, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ WHERE cat_chip_number = ?;`
 	q2 := `DELETE
 FROM cats
 WHERE chip_number = ?;`
-	_, err = r.storage.DB.Exec(q2, catChipNumber.ChipNumber)
+	_, err = r.storage.DB.Exec(q2, catChipNumber)
 	return err
 }
 
@@ -126,7 +126,7 @@ func (r *residentRepository) Update(ctx context.Context, catChipNumber models.Ca
 SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?
 WHERE cat_chip_number = ?;`
 
-	_, err = r.storage.DB.Exec(q1, rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber.ChipNumber)
+	_, err = r.storage.DB.Exec(q1, rd.CatChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -135,6 +135,6 @@ WHERE cat_chip_number = ?;`
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 
-	_, err = r.storage.DB.Exec(q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber.ChipNumber)
+	_, err = r.storage.DB.Exec(q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.CatChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

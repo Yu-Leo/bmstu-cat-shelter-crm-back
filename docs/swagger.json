@@ -69,7 +69,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.CatChipNumber"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -258,7 +258,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.GuardianId"
+                            "type": "integer"
                         }
                     },
                     "400": {
@@ -470,7 +470,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.CatChipNumber"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -648,14 +648,6 @@
                 }
             }
         },
-        "models.CatChipNumber": {
-            "type": "object",
-            "properties": {
-                "chipNumber": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CreateCatRequest": {
             "type": "object",
             "required": [
@@ -760,14 +752,6 @@
                 },
                 "photoUrl": {
                     "type": "string"
-                }
-            }
-        },
-        "models.GuardianId": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
                 }
             }
         },

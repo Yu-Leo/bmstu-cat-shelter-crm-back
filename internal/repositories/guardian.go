@@ -13,7 +13,7 @@ import (
 )
 
 type GuardianRepository interface {
-	Create(context.Context, models.CreateGuardianRequest) (*models.GuardianId, error)
+	Create(context.Context, models.CreateGuardianRequest) (models.GuardianId, error)
 	GetList(context.Context) (*[]models.Guardian, error)
 	Get(context.Context, models.GuardianId) (*models.Guardian, error)
 	Delete(context.Context, models.GuardianId) error
@@ -30,7 +30,7 @@ func NewSqliteGuardianRepository(storage *sqlitedb.Storage) GuardianRepository {
 	}
 }
 
-func (r *guardianRepository) Create(ctx context.Context, rd models.CreateGuardianRequest) (_ *models.GuardianId, err error) {
+func (r *guardianRepository) Create(ctx context.Context, rd models.CreateGuardianRequest) (_ models.GuardianId, err error) {
 	q1 := `INSERT INTO people (photo_url, firstname, lastname, patronymic, phone)
 VALUES (?, ?, ?, ?, ?) RETURNING people.person_id;`
 
@@ -39,20 +39,20 @@ VALUES (?, ?, ?, ?, ?) RETURNING people.person_id;`
 		rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic, rd.Phone).Scan(&personId)
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return nil, apperror.PersonPhoneAlreadyExists
+			return -1, apperror.PersonPhoneAlreadyExists
 		}
-		return nil, err
+		return -1, err
 	}
 
 	q2 := `INSERT INTO guardians (person_id)
 VALUES (?) RETURNING guardians.guardian_id;`
 
-	var guardianId int
+	var guardianId models.GuardianId
 	err = r.storage.DB.QueryRowContext(ctx, q2, personId).Scan(&guardianId)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
-	return &models.GuardianId{Id: guardianId}, nil
+	return guardianId, nil
 }
 
 func (r *guardianRepository) GetList(ctx context.Context) (guardiansList *[]models.Guardian, err error) {
@@ -87,7 +87,7 @@ JOIN people p on p.person_id = g.person_id
 WHERE g.guardian_id = ?;`
 
 	g := models.Guardian{}
-	err = r.storage.DB.QueryRow(q, id.Id).Scan(&g.GuardianId, &g.PersonId, &g.PhotoUrl, &g.Firstname, &g.Lastname, &g.Patronymic, &g.Phone)
+	err = r.storage.DB.QueryRow(q, id).Scan(&g.GuardianId, &g.PersonId, &g.PhotoUrl, &g.Firstname, &g.Lastname, &g.Patronymic, &g.Phone)
 
 	if err == sql.ErrNoRows {
 		return nil, apperror.GuardianNotFound
@@ -101,7 +101,7 @@ func (r *guardianRepository) Delete(ctx context.Context, id models.GuardianId) (
 	q1 := `SELECT person_id
 FROM guardians
 WHERE guardian_id = ?;`
-	err = r.storage.DB.QueryRow(q1, id.Id).Scan(&personId)
+	err = r.storage.DB.QueryRow(q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
 		return apperror.GuardianNotFound
 	}
@@ -109,7 +109,7 @@ WHERE guardian_id = ?;`
 	q2 := `DELETE
 FROM guardians
 WHERE guardian_id = ?;`
-	_, err = r.storage.DB.Exec(q2, id.Id)
+	_, err = r.storage.DB.Exec(q2, id)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func (r *guardianRepository) Update(ctx context.Context, id models.GuardianId, r
 	q1 := `SELECT person_id
 FROM guardians
 WHERE guardian_id = ?;`
-	err = r.storage.DB.QueryRow(q1, id.Id).Scan(&personId)
+	err = r.storage.DB.QueryRow(q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
 		return apperror.GuardianNotFound
 	}
