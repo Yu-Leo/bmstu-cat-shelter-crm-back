@@ -2,7 +2,12 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
+	"github.com/mattn/go-sqlite3"
+
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 )
@@ -26,21 +31,110 @@ func NewSqliteResidentRepository(storage *sqlitedb.Storage) ResidentRepository {
 }
 
 func (r *residentRepository) Create(ctx context.Context, rd models.CreateResidentRequest) (_ *models.CatChipNumber, err error) {
-	return nil, nil
+	q1 := `INSERT INTO cats (nickname, photo_url, gender, age, chip_number, date_of_admission_to_shelter)
+VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
+
+	var chipNumber string
+
+	err = r.storage.DB.QueryRowContext(ctx, q1,
+		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+
+	if err != nil {
+		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
+			return nil, apperror.CatChipNumberAlreadyExists
+		}
+		return nil, err
+	}
+
+	q2 := `INSERT INTO residents (cat_chip_number, booking, aggressiveness, vk_album_url, guardian_id)
+VALUES (?, ?, ?, ?, ?); `
+
+	_, err = r.storage.DB.ExecContext(ctx, q2,
+		chipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId)
+
+	if err != nil {
+		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
+			return nil, apperror.CatChipNumberAlreadyExists
+		}
+		return nil, err
+	}
+	return &models.CatChipNumber{ChipNumber: chipNumber}, nil
 }
 
 func (r *residentRepository) GetList(ctx context.Context) (list *[]models.Resident, err error) {
-	return nil, nil
+	q := `SELECT c.chip_number, c.nickname, c.photo_url, c.gender,
+       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id
+FROM residents as r
+JOIN cats c on c.chip_number = r.cat_chip_number;`
+	answer := make([]models.Resident, 0)
+
+	rows, err := r.storage.DB.Query(q)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		ru := models.Resident{}
+		err = rows.Scan(&ru.ChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
+			&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
+		if err != nil {
+			return nil, err
+		}
+		answer = append(answer, ru)
+	}
+
+	return &answer, nil
 }
 
 func (r *residentRepository) Get(ctx context.Context, catChipNumber models.CatChipNumber) (_ *models.Resident, err error) {
-	return nil, nil
+	q := `SELECT c.chip_number, c.nickname, c.photo_url, c.gender,
+       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id
+FROM residents as r
+JOIN cats c on c.chip_number = r.cat_chip_number
+WHERE r.cat_chip_number = ?;`
+
+	ru := models.Resident{}
+	err = r.storage.DB.QueryRow(q, catChipNumber.ChipNumber).Scan(&ru.ChipNumber, &ru.Nickname, &ru.PhotoUrl, &ru.Gender, &ru.Age,
+		&ru.DateOfAdmissionToShelter, &ru.Booking, &ru.Aggressiveness, &ru.VKAlbumUrl, &ru.GuardianId)
+	if err == sql.ErrNoRows {
+		return nil, apperror.ResidentNotFound
+	}
+
+	return &ru, nil
 }
 
 func (r *residentRepository) Delete(ctx context.Context, catChipNumber models.CatChipNumber) (err error) {
-	return nil
+	q1 := `DELETE
+FROM residents
+WHERE cat_chip_number = ?;`
+	_, err = r.storage.DB.Exec(q1, catChipNumber.ChipNumber)
+	if err != nil {
+		return err
+	}
+
+	q2 := `DELETE
+FROM cats
+WHERE chip_number = ?;`
+	_, err = r.storage.DB.Exec(q2, catChipNumber.ChipNumber)
+	return err
 }
 
 func (r *residentRepository) Update(ctx context.Context, catChipNumber models.CatChipNumber, rd models.CreateResidentRequest) (err error) {
-	return nil
+	q1 := `UPDATE residents
+SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?
+WHERE cat_chip_number = ?;`
+
+	_, err = r.storage.DB.Exec(q1, rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber.ChipNumber)
+	if err != nil {
+		return err
+	}
+
+	q2 := `UPDATE cats
+SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
+WHERE chip_number = ?;`
+
+	_, err = r.storage.DB.Exec(q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber.ChipNumber)
+	return err
 }
