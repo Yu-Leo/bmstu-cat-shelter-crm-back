@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/errors"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 
@@ -41,7 +41,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return "", apperror.CatChipNumberAlreadyExists
+			return "", errors.CatChipNumberAlreadyExists
 		}
 		return "", err
 	}
@@ -80,7 +80,7 @@ func (r *catRepository) Get(ctx context.Context, catChipNumber models.CatChipNum
 		&o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age, &o.ChipNumber, &o.DateOfAdmissionToShelter)
 
 	if err == sql.ErrNoRows {
-		return nil, apperror.CatNotFound
+		return nil, errors.CatNotFound
 	}
 
 	return &o, nil

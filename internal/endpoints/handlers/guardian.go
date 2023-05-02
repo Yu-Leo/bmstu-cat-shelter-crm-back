@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/errors"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
@@ -42,27 +42,27 @@ func NewGuardianRoutes(handler *gin.RouterGroup, guardianService *services.Guard
 // @Produce     json
 // @Param createGuardianObject body models.CreateGuardianRequest true "Parameters for creating a guardian."
 // @Success     201 {object} models.GuardianId
-// @Failure	    400 {object} apperror.ErrorJSON
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    400 {object} errors.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /guardians [post]
 func (r *guardianRoutes) CreateGuardian(c *gin.Context) {
 	requestData := models.CreateGuardianRequest{}
 
 	err := c.BindJSON(&requestData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{
-			Message:          apperror.ValidationErrorMsg,
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{
+			Message:          errors.ValidationErrorMsg,
 			DeveloperMessage: err.Error()})
 		return
 	}
 
 	newGuardianId, err := r.guardianService.CreateGuardian(requestData)
 	if err != nil {
-		if err == apperror.PersonPhoneAlreadyExists {
+		if err == errors.PersonPhoneAlreadyExists {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -77,12 +77,12 @@ func (r *guardianRoutes) CreateGuardian(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Success     200 {array} models.Guardian
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /guardians [get]
 func (r *guardianRoutes) GetGuardiansList(c *gin.Context) {
 	guardiansList, err := r.guardianService.GetGuardiansList()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -97,21 +97,21 @@ func (r *guardianRoutes) GetGuardiansList(c *gin.Context) {
 // @Produce     json
 // @Param id path int true "ID"
 // @Success     200 {object} models.Guardian
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /guardians/{id} [get]
 func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 	idStr := c.Params.ByName("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{Message: errors.InvalidGuardianIdMsg})
 	}
 	guardian, err := r.guardianService.GetGuardian(models.GuardianId(id))
-	if err == apperror.GuardianNotFound {
+	if err == errors.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -126,22 +126,22 @@ func (r *guardianRoutes) GetGuardian(c *gin.Context) {
 // @Produce     json
 // @Param id path int true "ID"
 // @Success     204
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /guardians/{id} [delete]
 func (r *guardianRoutes) DeleteGuardian(c *gin.Context) {
 	idStr := c.Params.ByName("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{Message: errors.InvalidGuardianIdMsg})
 	}
 
 	err = r.guardianService.DeleteGuardian(models.GuardianId(id))
-	if err == apperror.GuardianNotFound {
+	if err == errors.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -157,31 +157,31 @@ func (r *guardianRoutes) DeleteGuardian(c *gin.Context) {
 // @Param id path int true "ID"
 // @Param createGuardianObject body models.CreateGuardianRequest true "Parameters for updating a guardian."
 // @Success     204
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /guardians/{id} [put]
 func (r *guardianRoutes) UpdateGuardian(c *gin.Context) {
 	idStr := c.Params.ByName("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{Message: apperror.InvalidGuardianIdMsg})
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{Message: errors.InvalidGuardianIdMsg})
 	}
 	requestData := models.CreateGuardianRequest{}
 
 	err = c.BindJSON(&requestData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{
-			Message:          apperror.ValidationErrorMsg,
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{
+			Message:          errors.ValidationErrorMsg,
 			DeveloperMessage: err.Error()})
 		return
 	}
 
 	err = r.guardianService.UpdateGuardian(models.GuardianId(id), requestData)
-	if err == apperror.GuardianNotFound {
+	if err == errors.GuardianNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}

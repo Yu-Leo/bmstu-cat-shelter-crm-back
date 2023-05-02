@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/errors"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 
@@ -39,7 +39,7 @@ VALUES (?, ?, ?, ?, ?) RETURNING people.person_id;`
 		rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic, rd.Phone).Scan(&personId)
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return -1, apperror.PersonPhoneAlreadyExists
+			return -1, errors.PersonPhoneAlreadyExists
 		}
 		return -1, err
 	}
@@ -91,7 +91,7 @@ WHERE g.guardian_id = ?;`
 		&o.Id, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 
 	if err == sql.ErrNoRows {
-		return nil, apperror.GuardianNotFound
+		return nil, errors.GuardianNotFound
 	}
 
 	return &o, nil
@@ -104,7 +104,7 @@ FROM guardians
 WHERE guardian_id = ?;`
 	err = r.storage.DB.QueryRowContext(ctx, q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
-		return apperror.GuardianNotFound
+		return errors.GuardianNotFound
 	}
 
 	q2 := `DELETE
@@ -129,7 +129,7 @@ FROM guardians
 WHERE guardian_id = ?;`
 	err = r.storage.DB.QueryRowContext(ctx, q1, id).Scan(&personId)
 	if err == sql.ErrNoRows {
-		return apperror.GuardianNotFound
+		return errors.GuardianNotFound
 	}
 
 	q2 := `UPDATE people

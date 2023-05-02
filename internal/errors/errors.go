@@ -1,4 +1,4 @@
-package apperror
+package errors
 
 var (
 	CatChipNumberAlreadyExists = NewAppError("Cat's chip number already exists")

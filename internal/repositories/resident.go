@@ -7,7 +7,7 @@ import (
 
 	"github.com/mattn/go-sqlite3"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/errors"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 )
@@ -41,7 +41,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return "", apperror.CatChipNumberAlreadyExists
+			return "", errors.CatChipNumberAlreadyExists
 		}
 		return "", err
 	}
@@ -54,7 +54,7 @@ VALUES (?, ?, ?, ?, ?); `
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
-			return "", apperror.CatChipNumberAlreadyExists
+			return "", errors.CatChipNumberAlreadyExists
 		}
 		return "", err
 	}
@@ -99,7 +99,7 @@ WHERE r.cat_chip_number = ?;`
 	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
 		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
 	if err == sql.ErrNoRows {
-		return nil, apperror.ResidentNotFound
+		return nil, errors.ResidentNotFound
 	}
 
 	return &o, nil

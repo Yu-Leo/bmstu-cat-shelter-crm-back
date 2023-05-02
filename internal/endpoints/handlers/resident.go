@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/apperror"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/errors"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/models"
 
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
@@ -41,27 +41,27 @@ func NewResidentRoutes(handler *gin.RouterGroup, residentService *services.Resid
 // @Produce     json
 // @Param createResidentObject body models.CreateResidentRequest true "Parameters for creating a resident."
 // @Success     201 {object} models.CatChipNumber
-// @Failure	    400 {object} apperror.ErrorJSON
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    400 {object} errors.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /residents [post]
 func (r *residentRoutes) CreateResident(c *gin.Context) {
 	requestData := models.CreateResidentRequest{}
 
 	err := c.BindJSON(&requestData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{
-			Message:          apperror.ValidationErrorMsg,
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{
+			Message:          errors.ValidationErrorMsg,
 			DeveloperMessage: err.Error()})
 		return
 	}
 
 	newResidentId, err := r.residentService.CreateResident(requestData)
 	if err != nil {
-		if err == apperror.PersonPhoneAlreadyExists {
+		if err == errors.PersonPhoneAlreadyExists {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -76,12 +76,12 @@ func (r *residentRoutes) CreateResident(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Success     200 {array} models.Resident
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /residents [get]
 func (r *residentRoutes) GetResidentsList(c *gin.Context) {
 	residentsList, err := r.residentService.GetResidentsList()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -96,17 +96,17 @@ func (r *residentRoutes) GetResidentsList(c *gin.Context) {
 // @Produce     json
 // @Param chip_number path string true "Chip number"
 // @Success     200 {object} models.Resident
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /residents/{chip_number} [get]
 func (r *residentRoutes) GetResident(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 	resident, err := r.residentService.GetResident(models.CatChipNumber(chipNumber))
-	if err == apperror.ResidentNotFound {
+	if err == errors.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -121,18 +121,18 @@ func (r *residentRoutes) GetResident(c *gin.Context) {
 // @Produce     json
 // @Param chip_number path string true "Chip number"
 // @Success     204
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /residents/{chip_number} [delete]
 func (r *residentRoutes) DeleteResident(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
 
 	err := r.residentService.DeleteResident(models.CatChipNumber(chipNumber))
-	if err == apperror.ResidentNotFound {
+	if err == errors.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
@@ -148,7 +148,7 @@ func (r *residentRoutes) DeleteResident(c *gin.Context) {
 // @Param chip_number path string true "Chip number"
 // @Param createResidentObject body models.CreateResidentRequest true "Parameters for updating a resident."
 // @Success     204
-// @Failure	    500 {object} apperror.ErrorJSON
+// @Failure	    500 {object} errors.ErrorJSON
 // @Router      /residents/{chip_number} [put]
 func (r *residentRoutes) UpdateResident(c *gin.Context) {
 	chipNumber := c.Params.ByName("chip_number")
@@ -156,19 +156,19 @@ func (r *residentRoutes) UpdateResident(c *gin.Context) {
 
 	err := c.BindJSON(&requestData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, apperror.ErrorJSON{
-			Message:          apperror.ValidationErrorMsg,
+		c.JSON(http.StatusBadRequest, errors.ErrorJSON{
+			Message:          errors.ValidationErrorMsg,
 			DeveloperMessage: err.Error()})
 		return
 	}
 
 	err = r.residentService.UpdateResident(models.CatChipNumber(chipNumber), requestData)
-	if err == apperror.ResidentNotFound {
+	if err == errors.ResidentNotFound {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, apperror.InternalServerError)
+		c.JSON(http.StatusInternalServerError, errors.InternalServerError)
 		r.logger.Error(err.Error())
 		return
 	}
