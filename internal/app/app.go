@@ -51,11 +51,13 @@ func addRouters(ginEngine *gin.Engine, logger *logrus.Logger, storage *sqlitedb.
 	catRepository := repositories.NewSqliteCatRepository(storage)
 	guardianRepository := repositories.NewSqliteGuardianRepository(storage)
 	residentRepository := repositories.NewSqliteResidentRepository(storage)
+	roomRepository := repositories.NewSqliteRoomRepository(storage)
 
 	resolver := services.NewResolver(
 		services.NewCatService(catRepository),
 		services.NewGuardianService(guardianRepository),
 		services.NewResidentService(residentRepository),
+		services.NewRoomService(roomRepository),
 		logger)
 
 	endpoints.NewRouter(ginEngine, resolver)

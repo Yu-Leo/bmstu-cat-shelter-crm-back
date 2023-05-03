@@ -40,8 +40,10 @@ CREATE TABLE residents (
 	aggressiveness bool,
 	vk_album_url text,
 	guardian_id integer,
+	room_number text,
     FOREIGN KEY (cat_chip_number) REFERENCES cats(chip_number),
-    FOREIGN KEY (guardian_id) REFERENCES guardians(guardian_id));
+    FOREIGN KEY (guardian_id) REFERENCES guardians(guardian_id),
+    FOREIGN KEY (room_number) REFERENCES rooms(number));
 
 DROP TABLE IF EXISTS people;
 CREATE TABLE people (
@@ -56,7 +58,12 @@ DROP TABLE IF EXISTS guardians;
 CREATE TABLE guardians (
     guardian_id integer UNIQUE NOT NULL PRIMARY KEY,
     person_id integer NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES people(person_id));`
+    FOREIGN KEY (person_id) REFERENCES people(person_id));
+
+DROP TABLE IF EXISTS rooms;
+CREATE TABLE rooms (
+    number text UNIQUE NOT NULL CHECK(LENGTH(number) == 2) PRIMARY KEY,
+    status text);`
 
 	_, err := s.DB.ExecContext(ctx, q)
 	return err

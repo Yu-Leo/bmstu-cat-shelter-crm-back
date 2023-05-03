@@ -1,18 +1,18 @@
 basePath: /
 definitions:
-  apperror.ErrorJSON:
-    properties:
-      developerMessage:
-        type: string
-      message:
-        type: string
-    type: object
   endpoints.healthResponse:
     properties:
       message:
         type: string
       status:
         type: integer
+    type: object
+  errors.ErrorJSON:
+    properties:
+      developerMessage:
+        type: string
+      message:
+        type: string
     type: object
   models.Cat:
     properties:
@@ -84,6 +84,13 @@ definitions:
     required:
     - nickname
     type: object
+  models.CreateRoomRequest:
+    properties:
+      number:
+        type: string
+      status:
+        type: string
+    type: object
   models.Guardian:
     properties:
       firstname:
@@ -122,6 +129,13 @@ definitions:
       photoUrl:
         type: string
     type: object
+  models.Room:
+    properties:
+      number:
+        type: string
+      status:
+        type: string
+    type: object
 host: 127.0.0.1:9000
 info:
   contact:
@@ -147,7 +161,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get cats list
       tags:
       - cats
@@ -172,11 +186,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Create cat
       tags:
       - cats
@@ -199,7 +213,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Delete cat
       tags:
       - cats
@@ -223,7 +237,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get cat
       tags:
       - cats
@@ -251,7 +265,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Update cat
       tags:
       - cats
@@ -272,7 +286,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get guardians list
       tags:
       - guardians
@@ -297,11 +311,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Create guardian
       tags:
       - guardians
@@ -324,7 +338,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Delete guardian
       tags:
       - guardians
@@ -348,7 +362,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get guardian
       tags:
       - guardians
@@ -376,7 +390,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Update guardian
       tags:
       - guardians
@@ -412,7 +426,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get residents list
       tags:
       - residents
@@ -437,11 +451,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Create resident
       tags:
       - residents
@@ -464,7 +478,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Delete resident
       tags:
       - residents
@@ -488,7 +502,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Get resident
       tags:
       - residents
@@ -516,8 +530,133 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apperror.ErrorJSON'
+            $ref: '#/definitions/errors.ErrorJSON'
       summary: Update resident
       tags:
       - residents
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      operationId: getRoomsList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Room'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get rooms list
+      tags:
+      - rooms
+    post:
+      consumes:
+      - application/json
+      operationId: createRoom
+      parameters:
+      - description: Parameters for creating a room.
+        in: body
+        name: createRoomObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Create room
+      tags:
+      - rooms
+  /rooms/{number}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Delete room
+      tags:
+      - rooms
+    get:
+      consumes:
+      - application/json
+      operationId: getRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Room'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get room
+      tags:
+      - rooms
+    put:
+      consumes:
+      - application/json
+      operationId: updateRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      - description: Parameters for updating a room.
+        in: body
+        name: createRoomObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Update room
+      tags:
+      - rooms
 swagger: "2.0"

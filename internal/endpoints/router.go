@@ -33,6 +33,7 @@ func NewRouter(ginEngine *gin.Engine, resolver *services.Resolver) {
 		handlers.NewCatRoutes(router, resolver.CatService, resolver.Logger)
 		handlers.NewGuardianRoutes(router, resolver.GuardianService, resolver.Logger)
 		handlers.NewResidentRoutes(router, resolver.ResidentService, resolver.Logger)
+		handlers.NewRoomRoutes(router, resolver.RoomService, resolver.Logger)
 	}
 }
 
