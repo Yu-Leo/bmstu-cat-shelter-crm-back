@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 	"strings"
 
 	"github.com/mattn/go-sqlite3"
@@ -47,17 +48,53 @@ VALUES (?, ?) RETURNING rooms.number;`
 }
 
 func (r *roomRepository) GetList(ctx context.Context) (roomsList *[]models.Room, err error) {
-	return nil, nil
+	q := `SELECT number, status FROM rooms;`
+	objects := make([]models.Room, 0)
+
+	rows, err := r.storage.DB.QueryContext(ctx, q)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		o := models.Room{}
+		err = rows.Scan(&o.Number, &o.Status)
+		if err != nil {
+			return nil, err
+		}
+		objects = append(objects, o)
+	}
+
+	return &objects, nil
 }
 
 func (r *roomRepository) Get(ctx context.Context, roomNumber models.RoomNumber) (*models.Room, error) {
-	return nil, nil
+	q := `SELECT number, status FROM rooms
+		WHERE number = ?;`
+	o := models.Room{}
+	err := r.storage.DB.QueryRowContext(ctx, q, roomNumber).Scan(&o.Number, &o.Status)
+
+	if err == sql.ErrNoRows {
+		return nil, errors.RoomNotFound
+	}
+
+	return &o, nil
 }
 
 func (r *roomRepository) Delete(ctx context.Context, roomNumber models.RoomNumber) error {
-	return nil
+	q := `DELETE
+FROM rooms
+WHERE number = ?;`
+	_, err := r.storage.DB.ExecContext(ctx, q, roomNumber)
+	return err
 }
 
 func (r *roomRepository) Update(ctx context.Context, roomNumber models.RoomNumber, rd models.CreateRoomRequest) error {
-	return nil
+	q := `UPDATE rooms
+SET number = ?, status = ?
+WHERE number = ?;`
+	_, err := r.storage.DB.ExecContext(ctx, q, rd.Number, rd.Status, roomNumber)
+	return err
 }
