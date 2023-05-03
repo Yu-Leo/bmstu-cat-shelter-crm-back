@@ -926,6 +926,9 @@ const docTemplate = `{
                 },
                 "photoUrl": {
                     "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
                 }
             }
         },
@@ -994,6 +997,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "photoUrl": {
+                    "type": "string"
+                },
+                "roomNumber": {
                     "type": "string"
                 }
             }

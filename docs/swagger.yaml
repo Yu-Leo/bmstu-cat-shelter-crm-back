@@ -81,6 +81,8 @@ definitions:
         type: string
       photoUrl:
         type: string
+      roomNumber:
+        type: string
     required:
     - nickname
     type: object
@@ -127,6 +129,8 @@ definitions:
       nickname:
         type: string
       photoUrl:
+        type: string
+      roomNumber:
         type: string
     type: object
   models.Room:

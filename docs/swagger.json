@@ -918,6 +918,9 @@
                 },
                 "photoUrl": {
                     "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
                 }
             }
         },
@@ -986,6 +989,9 @@
                     "type": "string"
                 },
                 "photoUrl": {
+                    "type": "string"
+                },
+                "roomNumber": {
                     "type": "string"
                 }
             }

@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/mattn/go-sqlite3"
@@ -46,11 +47,11 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 		return "", err
 	}
 
-	q2 := `INSERT INTO residents (cat_chip_number, booking, aggressiveness, vk_album_url, guardian_id)
-VALUES (?, ?, ?, ?, ?); `
+	q2 := `INSERT INTO residents (cat_chip_number, booking, aggressiveness, vk_album_url, guardian_id, room_number)
+VALUES (?, ?, ?, ?, ?, ?); `
 
 	_, err = r.storage.DB.ExecContext(ctx, q2,
-		chipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId)
+		chipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, rd.RoomNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -63,7 +64,7 @@ VALUES (?, ?, ?, ?, ?); `
 
 func (r *residentRepository) GetList(ctx context.Context) (list *[]models.Resident, err error) {
 	q := `SELECT c.chip_number, c.nickname, c.photo_url, c.gender,
-       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id
+       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id, r.room_number
 FROM residents as r
 JOIN cats c on c.chip_number = r.cat_chip_number;`
 	objects := make([]models.Resident, 0)
@@ -78,7 +79,7 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 	for rows.Next() {
 		o := models.Resident{}
 		err = rows.Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
-			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
+			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId, &o.RoomNumber)
 		if err != nil {
 			return nil, err
 		}
@@ -90,14 +91,14 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 
 func (r *residentRepository) Get(ctx context.Context, catChipNumber models.CatChipNumber) (_ *models.Resident, err error) {
 	q := `SELECT c.chip_number, c.nickname, c.photo_url, c.gender,
-       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id
+       c.age, c.date_of_admission_to_shelter, r.booking, r.aggressiveness, r.vk_album_url, r.guardian_id,  r.room_number
 FROM residents as r
 JOIN cats c on c.chip_number = r.cat_chip_number
 WHERE r.cat_chip_number = ?;`
 
 	o := models.Resident{}
 	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
-		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId)
+		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId, &o.RoomNumber)
 	if err == sql.ErrNoRows {
 		return nil, errors.ResidentNotFound
 	}
@@ -123,14 +124,16 @@ WHERE chip_number = ?;`
 
 func (r *residentRepository) Update(ctx context.Context, catChipNumber models.CatChipNumber, rd models.CreateResidentRequest) (err error) {
 	q1 := `UPDATE residents
-SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?
+SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?, room_number = ?
 WHERE cat_chip_number = ?;`
 
-	_, err = r.storage.DB.ExecContext(ctx, q1, rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q1,
+		rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, rd.RoomNumber, catChipNumber)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println(rd.RoomNumber)
 	q2 := `UPDATE cats
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
