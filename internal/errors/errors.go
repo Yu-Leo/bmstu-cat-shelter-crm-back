@@ -4,7 +4,6 @@ var (
 	CatChipNumberAlreadyExists = NewAppError("Cat's chip number already exists")
 	PersonPhoneAlreadyExists   = NewAppError("Person's phone already exists")
 	RoomNumberAlreadyExists    = NewAppError("Room's number already exists")
-	CatNotFound                = NewAppError("Cat not found")
 	ResidentNotFound           = NewAppError("Resident not found")
 	GuardianNotFound           = NewAppError("Guardian not found")
 	RoomNotFound               = NewAppError("Room not found")
