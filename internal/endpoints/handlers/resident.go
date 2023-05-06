@@ -57,7 +57,7 @@ func (r *residentRoutes) CreateResident(c *gin.Context) {
 
 	newResidentId, err := r.residentService.CreateResident(requestData)
 	if err != nil {
-		if err == errors.PersonPhoneAlreadyExists {
+		if err == errors.CatChipNumberAlreadyExists {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
