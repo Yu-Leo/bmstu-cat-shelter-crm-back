@@ -1,8 +1,9 @@
 <h1 align="center"> :smiley_cat: Cas Shelter CRM (backend) </h1>
 
 <p align="center"> Проект в рамках курса "Программирование на основе Классов и Шаблонов" (МГТУ им. Н. Э. Баумана, ИУ5, 2 семестр) </p>
-
 <hr>
+
+:heavy_exclamation_mark: **Репозиторий с кодом десктопного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-desktop**
 
 ## Навигация
 
@@ -33,20 +34,22 @@ OpenAPI спецификация:
 <a id="chapter-2"></a>
 
 ## :zap: Запуск
+0. Инициализация БД
+```bash
+make init-db
+```
 
-1. Напрямую на машине
+1. Запуск локально на машине
 ```bash 
 make run
 ```
 
-2. В Docker-контейнере
+2. Запуск Docker-контейнере
 ```bash
 make d-run
 ```
 
 <a id="chapter-3"></a>
-
-<a id="chapter-4"></a>
 
 ## :computer: Исходный код
 
@@ -61,15 +64,15 @@ make d-run
 ### Технологии
 
 - СУБД: **SQLite3**
-- Язык программирования: **Go (1.19.4)**
+- Язык программирования: **Go (1.20)**
 - Фреймворки и библиотеки:
     - [`gin`](https://github.com/gin-gonic/gin) - HTTP веб-фреймворк
     - [`swag`](https://github.com/swaggo/swag) - автоматическая генерация RESTful API документации с Swagger 2.0
     - [`cleanenv`](http://github.com/ilyakaznacheev/cleanenv) - минималистичный конфигуратор настроек
     - [`logrus`](http://github.com/sirupsen/logrus) - логгер
 - Инструменты
-    - **Docker** and **Docker compose**
-    - **`make`**
+    - **Docker**
+    - **make**
 
 <a id="chapter-4"></a>
 
