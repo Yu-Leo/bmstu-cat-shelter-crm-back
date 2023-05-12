@@ -1,0 +1,773 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Cat Shelter CRM",
+        "contact": {
+            "name": "Lev Yuvenskiy",
+            "email": "levayu22@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "127.0.0.1:9000",
+    "basePath": "/",
+    "paths": {
+        "/guardians": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "guardians"
+                ],
+                "summary": "Get guardians list",
+                "operationId": "getGuardiansList",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Guardian"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "guardians"
+                ],
+                "summary": "Create guardian",
+                "operationId": "createGuardian",
+                "parameters": [
+                    {
+                        "description": "Parameters for creating a guardian.",
+                        "name": "createGuardianObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateGuardianRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/guardians/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "guardians"
+                ],
+                "summary": "Get guardian",
+                "operationId": "getGuardian",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Guardian"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "guardians"
+                ],
+                "summary": "Update guardian",
+                "operationId": "updateGuardian",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Parameters for updating a guardian.",
+                        "name": "createGuardianObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateGuardianRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "guardians"
+                ],
+                "summary": "Delete guardian",
+                "operationId": "deleteGuardian",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "operationId": "health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/endpoints.healthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/residents": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Get residents list",
+                "operationId": "getResidentsList",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Resident"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Create resident",
+                "operationId": "createResident",
+                "parameters": [
+                    {
+                        "description": "Parameters for creating a resident.",
+                        "name": "createResidentObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateResidentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/residents/{chip_number}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Get resident",
+                "operationId": "getResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Resident"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Update resident",
+                "operationId": "updateResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Parameters for updating a resident.",
+                        "name": "createResidentObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateResidentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "residents"
+                ],
+                "summary": "Delete resident",
+                "operationId": "deleteResident",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chip number",
+                        "name": "chip_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Get rooms list",
+                "operationId": "getRoomsList",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Room"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Create room",
+                "operationId": "createRoom",
+                "parameters": [
+                    {
+                        "description": "Parameters for creating a room.",
+                        "name": "createRoomObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{number}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Get room",
+                "operationId": "getRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Number",
+                        "name": "number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Room"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Update room",
+                "operationId": "updateRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Number",
+                        "name": "number",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Parameters for updating a room.",
+                        "name": "createRoomObject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Delete room",
+                "operationId": "deleteRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Number",
+                        "name": "number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorJSON"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "endpoints.healthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "errors.ErrorJSON": {
+            "type": "object",
+            "properties": {
+                "developerMessage": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateGuardianRequest": {
+            "type": "object",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateResidentRequest": {
+            "type": "object",
+            "required": [
+                "nickname"
+            ],
+            "properties": {
+                "VKAlbumUrl": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "aggressiveness": {
+                    "type": "boolean"
+                },
+                "booking": {
+                    "type": "boolean"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "guardianId": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateRoomRequest": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Guardian": {
+            "type": "object",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Resident": {
+            "type": "object",
+            "properties": {
+                "VKAlbumUrl": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "aggressiveness": {
+                    "type": "boolean"
+                },
+                "booking": {
+                    "type": "boolean"
+                },
+                "chipNumber": {
+                    "type": "string"
+                },
+                "dateOfAdmissionToShelter": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "guardianId": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "photoUrl": {
+                    "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Room": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

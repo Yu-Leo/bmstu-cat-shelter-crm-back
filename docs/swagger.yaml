@@ -1,0 +1,509 @@
+basePath: /
+definitions:
+  endpoints.healthResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  errors.ErrorJSON:
+    properties:
+      developerMessage:
+        type: string
+      message:
+        type: string
+    type: object
+  models.CreateGuardianRequest:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
+      photoUrl:
+        type: string
+    type: object
+  models.CreateResidentRequest:
+    properties:
+      VKAlbumUrl:
+        type: string
+      age:
+        type: integer
+      aggressiveness:
+        type: boolean
+      booking:
+        type: boolean
+      chipNumber:
+        type: string
+      dateOfAdmissionToShelter:
+        type: string
+      gender:
+        type: string
+      guardianId:
+        type: integer
+      nickname:
+        type: string
+      photoUrl:
+        type: string
+      roomNumber:
+        type: string
+    required:
+    - nickname
+    type: object
+  models.CreateRoomRequest:
+    properties:
+      number:
+        type: string
+      status:
+        type: string
+    type: object
+  models.Guardian:
+    properties:
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
+      photoUrl:
+        type: string
+    type: object
+  models.Resident:
+    properties:
+      VKAlbumUrl:
+        type: string
+      age:
+        type: integer
+      aggressiveness:
+        type: boolean
+      booking:
+        type: boolean
+      chipNumber:
+        type: string
+      dateOfAdmissionToShelter:
+        type: string
+      gender:
+        type: string
+      guardianId:
+        type: integer
+      nickname:
+        type: string
+      photoUrl:
+        type: string
+      roomNumber:
+        type: string
+    type: object
+  models.Room:
+    properties:
+      number:
+        type: string
+      status:
+        type: string
+    type: object
+host: 127.0.0.1:9000
+info:
+  contact:
+    email: levayu22@gmail.com
+    name: Lev Yuvenskiy
+  title: Cat Shelter CRM
+  version: "1.0"
+paths:
+  /guardians:
+    get:
+      consumes:
+      - application/json
+      operationId: getGuardiansList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Guardian'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get guardians list
+      tags:
+      - guardians
+    post:
+      consumes:
+      - application/json
+      operationId: createGuardian
+      parameters:
+      - description: Parameters for creating a guardian.
+        in: body
+        name: createGuardianObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateGuardianRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Create guardian
+      tags:
+      - guardians
+  /guardians/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Delete guardian
+      tags:
+      - guardians
+    get:
+      consumes:
+      - application/json
+      operationId: getGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Guardian'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get guardian
+      tags:
+      - guardians
+    put:
+      consumes:
+      - application/json
+      operationId: updateGuardian
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Parameters for updating a guardian.
+        in: body
+        name: createGuardianObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateGuardianRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Update guardian
+      tags:
+      - guardians
+  /health:
+    get:
+      consumes:
+      - application/json
+      operationId: health
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoints.healthResponse'
+      summary: Health check
+      tags:
+      - health
+  /residents:
+    get:
+      consumes:
+      - application/json
+      operationId: getResidentsList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Resident'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get residents list
+      tags:
+      - residents
+    post:
+      consumes:
+      - application/json
+      operationId: createResident
+      parameters:
+      - description: Parameters for creating a resident.
+        in: body
+        name: createResidentObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateResidentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Create resident
+      tags:
+      - residents
+  /residents/{chip_number}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Delete resident
+      tags:
+      - residents
+    get:
+      consumes:
+      - application/json
+      operationId: getResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Resident'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get resident
+      tags:
+      - residents
+    put:
+      consumes:
+      - application/json
+      operationId: updateResident
+      parameters:
+      - description: Chip number
+        in: path
+        name: chip_number
+        required: true
+        type: string
+      - description: Parameters for updating a resident.
+        in: body
+        name: createResidentObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateResidentRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Update resident
+      tags:
+      - residents
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      operationId: getRoomsList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Room'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get rooms list
+      tags:
+      - rooms
+    post:
+      consumes:
+      - application/json
+      operationId: createRoom
+      parameters:
+      - description: Parameters for creating a room.
+        in: body
+        name: createRoomObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Create room
+      tags:
+      - rooms
+  /rooms/{number}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Delete room
+      tags:
+      - rooms
+    get:
+      consumes:
+      - application/json
+      operationId: getRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Room'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Get room
+      tags:
+      - rooms
+    put:
+      consumes:
+      - application/json
+      operationId: updateRoom
+      parameters:
+      - description: Number
+        in: path
+        name: number
+        required: true
+        type: string
+      - description: Parameters for updating a room.
+        in: body
+        name: createRoomObject
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorJSON'
+      summary: Update room
+      tags:
+      - rooms
+swagger: "2.0"

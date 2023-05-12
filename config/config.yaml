@@ -1,0 +1,14 @@
+app:
+  name: 'bmstu-cat-shelter-crm-back'
+  version: '1.0.0'
+
+server:
+  host: '127.0.0.1'
+  port: 9000
+  mode: 'release'
+
+logger:
+  log_level: 'info'
+
+storage:
+  path: 'database.db'
