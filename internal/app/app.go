@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -24,7 +23,6 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 		l.Errorf("SQLite database open error: %e", err)
 		return
 	}
-	err = storage.Init(context.Background())
 	if err != nil {
 		l.Errorf("SQLite database init error: %e", err)
 		return
