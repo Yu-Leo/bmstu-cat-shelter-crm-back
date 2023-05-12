@@ -30,7 +30,7 @@ type ServerConfig struct {
 }
 
 type LoggerConfig struct {
-	Level string `yaml:"log_level" env:"LOG_LEVEL" env-default:"info"`
+	Level string `yaml:"log_level" env:"LOG_LEVEL" env-default:"info"` // trace/debug/info/warning/error/fatal/panic
 }
 
 type StorageConfig struct {

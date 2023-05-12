@@ -5,9 +5,10 @@ app:
 server:
   host: '127.0.0.1'
   port: 9000
+  mode: 'release'
 
 logger:
-  log_level: 'debug'
+  log_level: 'info'
 
 storage:
   path: 'database.db'

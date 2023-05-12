@@ -1,6 +1,7 @@
 package app
 
 import (
+	"database/sql"
 	"os"
 	"os/signal"
 	"syscall"
@@ -8,13 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/config"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/endpoints"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/repositories"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/internal/services"
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
-
-	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/config"
 	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/httpserver"
+	"github.com/Yu-Leo/bmstu-cat-shelter-crm-back/pkg/sqlitedb"
 )
 
 func Run(cfg *config.Config, l *logrus.Logger) {
@@ -27,7 +27,14 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 		l.Errorf("SQLite database init error: %e", err)
 		return
 	}
-	defer storage.DB.Close()
+	defer func(DB *sql.DB) {
+		err := DB.Close()
+		if err == nil {
+			l.Info("SQLite database close")
+		} else {
+			l.Errorf("SQLite database close error: %e", err)
+		}
+	}(storage.DB)
 
 	l.Info("Start application")
 

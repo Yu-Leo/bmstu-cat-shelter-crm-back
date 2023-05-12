@@ -15,6 +15,11 @@ func main() {
 	}
 
 	logger := logrus.New()
+	level, err := logrus.ParseLevel(cfg.Logger.Level)
+	if err != nil {
+		logrus.Error("Invalid log type: %s", err)
+	}
+	logger.SetLevel(level)
 
 	app.Run(cfg, logger)
 }
