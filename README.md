@@ -1,4 +1,4 @@
-<h1 align="center"> :smiley_cat: Cas Shelter CRM (backend) </h1>
+<h1 align="center"> :smiley_cat: Cat Shelter CRM (backend) </h1>
 
 <p align="center"> Проект в рамках курса "Программирование на основе Классов и Шаблонов" (МГТУ им. Н. Э. Баумана, ИУ5, 2 семестр) </p>
 <hr>
