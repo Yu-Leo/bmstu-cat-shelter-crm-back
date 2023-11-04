@@ -39,12 +39,12 @@ OpenAPI спецификация:
 make init-db
 ```
 
-1. Запуск локально на машине
+1.1 Запуск локально на машине
 ```bash 
 make run
 ```
 
-2. Запуск Docker-контейнере
+1.2 Запуск Docker-контейнере
 ```bash
 make d-run
 ```
@@ -54,6 +54,16 @@ make d-run
 ## :computer: Исходный код
 
 Структура проекта основана на [go-clean-template](https://github.com/evrone/go-clean-template).
+
+В качестве линтера используется [golangci-lint](https://golangci-lint.run/) с [конфигом](./.golangci.yml).
+
+### Make-команды
+
+- `make build` - сборка
+- `make run` - локальный запуск
+- `make d-run` - запуск в Docker-контейнере
+- `make lint` - запуск линтера
+- `make swag-init` - обновление Swagger-документации
 
 ### Конфигурация
 

@@ -14,3 +14,12 @@ run:
 init-db:
 	cat init/init.sql | sqlite3 database.db
 .PHONY: init-db
+
+build:
+	go build ./...
+.PHONY: build
+
+lint:
+	golangci-lint run	
+.PHONY: lint
+
