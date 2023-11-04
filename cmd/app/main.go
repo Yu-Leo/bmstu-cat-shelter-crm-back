@@ -11,13 +11,13 @@ func main() {
 	cfg, err := config.GetConfig()
 
 	if err != nil {
-		logrus.Fatal("Config error: %s", err)
+		logrus.Fatal("Config error: %w", err)
 	}
 
 	logger := logrus.New()
 	level, err := logrus.ParseLevel(cfg.Logger.Level)
 	if err != nil {
-		logrus.Error("Invalid log type: %s", err)
+		logrus.Error("Invalid log type: %w", err)
 	}
 	logger.SetLevel(level)
 
