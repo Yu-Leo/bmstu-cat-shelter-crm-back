@@ -27,8 +27,8 @@ func Run(cfg *config.Config, l *logrus.Logger) {
 		l.Errorf("SQLite database init error: %e", err)
 		return
 	}
-	defer func(DB *sql.DB) {
-		err := DB.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
 		if err == nil {
 			l.Info("SQLite database close")
 		} else {

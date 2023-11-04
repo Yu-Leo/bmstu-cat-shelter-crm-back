@@ -38,7 +38,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 	var chipNumber models.CatChipNumber
 
 	err = r.storage.DB.QueryRowContext(ctx, q1,
-		rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
+		rd.Nickname, rd.PhotoURL, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter).Scan(&chipNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -51,7 +51,7 @@ VALUES (?,?, ?, ?, ?, ?) RETURNING cats.chip_number;`
 VALUES (?, ?, ?, ?, ?, ?); `
 
 	_, err = r.storage.DB.ExecContext(ctx, q2,
-		chipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, rd.RoomNumber)
+		chipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumURL, rd.GuardianId, rd.RoomNumber)
 
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
@@ -78,8 +78,8 @@ JOIN cats c on c.chip_number = r.cat_chip_number;`
 
 	for rows.Next() {
 		o := models.Resident{}
-		err = rows.Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
-			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId, &o.RoomNumber)
+		err = rows.Scan(&o.ChipNumber, &o.Nickname, &o.PhotoURL, &o.Gender, &o.Age,
+			&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumURL, &o.GuardianId, &o.RoomNumber)
 		if err != nil {
 			return nil, err
 		}
@@ -97,8 +97,8 @@ JOIN cats c on c.chip_number = r.cat_chip_number
 WHERE r.cat_chip_number = ?;`
 
 	o := models.Resident{}
-	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.ChipNumber, &o.Nickname, &o.PhotoUrl, &o.Gender, &o.Age,
-		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumUrl, &o.GuardianId, &o.RoomNumber)
+	err = r.storage.DB.QueryRowContext(ctx, q, catChipNumber).Scan(&o.ChipNumber, &o.Nickname, &o.PhotoURL, &o.Gender, &o.Age,
+		&o.DateOfAdmissionToShelter, &o.Booking, &o.Aggressiveness, &o.VKAlbumURL, &o.GuardianId, &o.RoomNumber)
 	if err == sql.ErrNoRows {
 		return nil, errors.ResidentNotFound
 	}
@@ -128,7 +128,7 @@ SET booking = ?, aggressiveness = ?, vk_album_url = ?, guardian_id = ?, room_num
 WHERE cat_chip_number = ?;`
 
 	_, err = r.storage.DB.ExecContext(ctx, q1,
-		rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumUrl, rd.GuardianId, rd.RoomNumber, catChipNumber)
+		rd.ChipNumber, rd.Booking, rd.Aggressiveness, rd.VKAlbumURL, rd.GuardianId, rd.RoomNumber, catChipNumber)
 	if err != nil {
 		return err
 	}
@@ -138,6 +138,7 @@ WHERE cat_chip_number = ?;`
 SET nickname = ?, photo_url = ?, gender = ?, age = ?, chip_number = ?, date_of_admission_to_shelter = ? 
 WHERE chip_number = ?;`
 
-	_, err = r.storage.DB.ExecContext(ctx, q2, rd.Nickname, rd.PhotoUrl, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
+	_, err = r.storage.DB.ExecContext(ctx, q2,
+		rd.Nickname, rd.PhotoURL, rd.Gender, rd.Age, rd.ChipNumber, rd.DateOfAdmissionToShelter, catChipNumber)
 	return err
 }

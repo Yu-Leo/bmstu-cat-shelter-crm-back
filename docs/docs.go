@@ -648,7 +648,7 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 }
             }
@@ -659,7 +659,7 @@ const docTemplate = `{
                 "nickname"
             ],
             "properties": {
-                "VKAlbumUrl": {
+                "VKAlbumURL": {
                     "type": "string"
                 },
                 "age": {
@@ -686,7 +686,7 @@ const docTemplate = `{
                 "nickname": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 },
                 "roomNumber": {
@@ -723,7 +723,7 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 }
             }
@@ -731,7 +731,7 @@ const docTemplate = `{
         "models.Resident": {
             "type": "object",
             "properties": {
-                "VKAlbumUrl": {
+                "VKAlbumURL": {
                     "type": "string"
                 },
                 "age": {
@@ -758,7 +758,7 @@ const docTemplate = `{
                 "nickname": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 },
                 "roomNumber": {

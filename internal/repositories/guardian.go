@@ -36,7 +36,7 @@ VALUES (?, ?, ?, ?, ?) RETURNING people.person_id;`
 
 	var personId int
 	err = r.storage.DB.QueryRowContext(ctx, q1,
-		rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic, rd.Phone).Scan(&personId)
+		rd.PhotoURL, rd.Firstname, rd.Lastname, rd.Patronymic, rd.Phone).Scan(&personId)
 	if err != nil {
 		if strings.Contains(err.Error(), sqlite3.ErrConstraintUnique.Error()) {
 			return -1, errors.PersonPhoneAlreadyExists
@@ -70,7 +70,7 @@ JOIN people p on p.person_id = g.person_id;`
 
 	for rows.Next() {
 		o := models.Guardian{}
-		err = rows.Scan(&o.Id, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
+		err = rows.Scan(&o.Id, &o.PersonId, &o.PhotoURL, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 		if err != nil {
 			return nil, err
 		}
@@ -88,7 +88,7 @@ WHERE g.guardian_id = ?;`
 
 	o := models.Guardian{}
 	err = r.storage.DB.QueryRowContext(ctx, q, id).Scan(
-		&o.Id, &o.PersonId, &o.PhotoUrl, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
+		&o.Id, &o.PersonId, &o.PhotoURL, &o.Firstname, &o.Lastname, &o.Patronymic, &o.Phone)
 
 	if err == sql.ErrNoRows {
 		return nil, errors.GuardianNotFound
@@ -136,7 +136,7 @@ WHERE guardian_id = ?;`
 SET photo_url = ?, firstname = ?, lastname = ?, patronymic = ?, phone = ?
 WHERE person_id = ?;`
 
-	_, err = r.storage.DB.ExecContext(ctx, q2, rd.PhotoUrl, rd.Firstname, rd.Lastname, rd.Patronymic,
+	_, err = r.storage.DB.ExecContext(ctx, q2, rd.PhotoURL, rd.Firstname, rd.Lastname, rd.Patronymic,
 		rd.Phone, personId)
 	return err
 }

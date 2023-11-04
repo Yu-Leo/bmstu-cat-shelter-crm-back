@@ -640,7 +640,7 @@
                 "phone": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 }
             }
@@ -651,7 +651,7 @@
                 "nickname"
             ],
             "properties": {
-                "VKAlbumUrl": {
+                "VKAlbumURL": {
                     "type": "string"
                 },
                 "age": {
@@ -678,7 +678,7 @@
                 "nickname": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 },
                 "roomNumber": {
@@ -715,7 +715,7 @@
                 "phone": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 }
             }
@@ -723,7 +723,7 @@
         "models.Resident": {
             "type": "object",
             "properties": {
-                "VKAlbumUrl": {
+                "VKAlbumURL": {
                     "type": "string"
                 },
                 "age": {
@@ -750,7 +750,7 @@
                 "nickname": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photoURL": {
                     "type": "string"
                 },
                 "roomNumber": {

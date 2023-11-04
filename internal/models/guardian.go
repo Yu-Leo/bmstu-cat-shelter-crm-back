@@ -11,6 +11,6 @@ type CreateGuardianRequest struct {
 	Firstname  string `json:"firstname"`
 	Lastname   string `json:"lastname"`
 	Patronymic string `json:"patronymic"`
-	PhotoUrl   string `json:"photoUrl"`
+	PhotoURL   string `json:"photoURL"`
 	Phone      string `json:"phone"`
 }
