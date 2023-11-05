@@ -16,3 +16,20 @@ jobs:
 
     - name: Build
       run: make build
+  lint:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Install tools
+      run: make gotools
+
+    - name: Lint
+      run: make lint
