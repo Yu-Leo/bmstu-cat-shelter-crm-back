@@ -16,7 +16,7 @@ init-db:
 .PHONY: init-db
 
 build:
-	go build ./...
+	go build -v ./...
 .PHONY: build
 
 lint:
