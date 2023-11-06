@@ -20,6 +20,6 @@ func TestCreateRoom(t *testing.T) {
 
 	roomNumber, err := roomService.CreateRoom(roomRequest)
 
-	assert.Equal(t, roomNumber, roomRequest.Number)
+	assert.Equal(t, roomRequest.Number, roomNumber)
 	assert.NoError(t, err)
 }
