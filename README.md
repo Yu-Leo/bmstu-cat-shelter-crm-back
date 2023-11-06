@@ -4,6 +4,7 @@
 <hr>
 
 :heavy_exclamation_mark: **Репозиторий с кодом десктопного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-desktop**
+
 :heavy_exclamation_mark: **Репозиторий с кодом мобильного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-mobile**
 
 ## Навигация
