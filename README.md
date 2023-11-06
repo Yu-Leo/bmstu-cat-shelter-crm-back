@@ -1,9 +1,10 @@
 <h1 align="center"> :smiley_cat: Cat Shelter CRM (backend) </h1>
 
-<p align="center"> Проект в рамках курса "Программирование на основе Классов и Шаблонов" (МГТУ им. Н. Э. Баумана, ИУ5, 2 семестр) </p>
+<p align="center"> Проект в рамках курсов "Программирование на основе Классов и Шаблонов" и "Парадигмы и Конструкции Языков Программирования" (МГТУ им. Н. Э. Баумана, ИУ5, 2 и 3 семестры) </p>
 <hr>
 
 :heavy_exclamation_mark: **Репозиторий с кодом десктопного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-desktop**
+:heavy_exclamation_mark: **Репозиторий с кодом мобильного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-mobile**
 
 ## Навигация
 
@@ -60,10 +61,14 @@ make d-run
 ### Make-команды
 
 - `make build` - сборка
+- `make init-db` - инициализация файла с БД (SQLite3)
 - `make run` - локальный запуск
 - `make d-run` - запуск в Docker-контейнере
 - `make lint` - запуск линтера
 - `make swag-init` - обновление Swagger-документации
+- `make mocks` - генерация моков для unit-тестов
+- `make test` - запуск unit-тестов
+- `make gotools` - установка вспомогательных инструментов (golangci-lint и mockery)
 
 ### Конфигурация
 
@@ -84,8 +89,34 @@ make d-run
     - **Docker**
     - **make**
 
+### Unit-тесты
+
+Для генерации моков используется [mockery](https://vektra.github.io/mockery/latest/).
+
+Unit-тесты запускаются при помощи команды:
+
+```bash
+make test
+```
+
+P.S. Поскольку на данном этапе развития проекта в нём отсутсвет как таковая бизнес-логика, которую необходимо было бы покрыть unit-тестами,
+написание необльшого кол-ва unit-тестов необходимо для выполнения учебных задач - изучения mockery и запуска тестов в GitHub Actions.
+
+### CI/CD
+
+В качестве инструмента для CI/CD используется GitHub Actions.
+
+Инструкции описаны в файле [`./.github/workflows/go.yml`](./.github/workflows/go.yml).
+
+На каждый `push` в любой ветке запускается пайплайн, состоящий из следующих этапов:
+
+1. Сборка проекта
+2. Запуск линтера
+3. Запуск unit-тестов
+
 <a id="chapter-4"></a>
 
 ## :smile: Авторы
+
 - [Ювенский Лев](https://github.com/Yu-Leo)
 - [Беспалова Виктория](https://github.com/victobes)
