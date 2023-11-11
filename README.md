@@ -1,13 +1,21 @@
 <h1 align="center"> :smiley_cat: Cat Shelter CRM (backend) </h1>
 
+<p align="center">
+  <a href="https://github.com/Yu-Leo/bmstu-cat-shelter-crm-back/actions/workflows/go.yml" target="_blank"> <img alt="license" src="https://img.shields.io/github/actions/workflow/status/Yu-Leo/bmstu-cat-shelter-crm-back/go.yml?style=for-the-badge&logo=github"></a>
+  <a href="https://goreportcard.com/report/github.com/Yu-Leo/bmstu-cat-shelter-crm-back" target="_blank"> <img alt="license" src="https://goreportcard.com/badge/github.com/Yu-Leo/bmstu-cat-shelter-crm-back?style=for-the-badge"></a>
+  <a href="https://github.com/Yu-Leo/bmstu-cat-shelter-crm-back/commits/main" target="_blank"> <img alt="last commit" src="https://img.shields.io/github/last-commit/Yu-Leo/bmstu-cat-shelter-crm-back?style=for-the-badge"></a>
+  <a href="https://github.com/Yu-Leo/bmstu-cat-shelter-crm-back/graphs/contributors" target="_blank"> <img alt="commit activity" src="https://img.shields.io/github/commit-activity/m/Yu-Leo/bmstu-cat-shelter-crm-back?style=for-the-badge"></a>
+</p>
+
 <p align="center"> Проект в рамках курсов "Программирование на основе Классов и Шаблонов" и "Парадигмы и Конструкции Языков Программирования" (МГТУ им. Н. Э. Баумана, ИУ5, 2 и 3 семестры) </p>
 <hr>
 
-:heavy_exclamation_mark: **Репозиторий с кодом десктопного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-desktop**
+## :handshake: Клиенты
 
-:heavy_exclamation_mark: **Репозиторий с кодом мобильного клиента: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-mobile**
+- Desktop: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-desktop
+- Mobile: https://github.com/Yu-Leo/bmstu-cat-shelter-crm-mobile
 
-## Навигация
+## :world_map: Навигация
 
 * [Описание проекта](#chapter-0)
 * [API](#chapter-1)
@@ -102,6 +110,10 @@ make test
 
 P.S. Поскольку на данном этапе развития проекта в нём отсутсвет как таковая бизнес-логика, которую необходимо было бы покрыть unit-тестами,
 написание необльшого кол-ва unit-тестов необходимо для выполнения учебных задач - изучения mockery и запуска тестов в GitHub Actions.
+
+### E2E-тесты
+
+End-to-end тесты написаны на Python. Располагаются в директории [`./e2e-tests`](./e2e-tests).
 
 ### CI/CD
 
