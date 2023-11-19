@@ -3,6 +3,7 @@
 ## Структура проекта
 
 - `tests` - папка со всеми тестами
+    - `room` - тесты для сущности Room
     - `conftest.py` - файл с фикстурами для pytest
     - `models.py` - файл с моделями сущностей и `Input`-ов
     - `utils.py` - функции с шаблонными запросами, облегчающие тестирование
@@ -49,5 +50,5 @@ python -m pytest ./tests
 ## Используемые библиотеки
 
 - [pytest](https://github.com/pytest-dev/pytest) - для написания тестов
-- [dynaconf](https://github.com/dynaconf/dynaconf) - для настройки конфига
+- [dynaconf](https://github.com/dynaconf/dynaconf) - для работы с конфигом
 
