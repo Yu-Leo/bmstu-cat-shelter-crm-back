@@ -28,8 +28,17 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-
+        
+    - name: Gotools Cache
+      uses: actions/cache@v2
+      id: cache-gotools
+      with:
+        path: ~/go/bin
+        key: ${{ runner.os }}-go-${{ hashFiles('**/Makefile') }}
+        restore-keys: ${{ runner.os }}-go-
+          
     - name: Install tools
+      if: steps.cache-gotools.outputs.cache-hit != 'true'
       run: make gotools
 
     - name: Gen mocks
