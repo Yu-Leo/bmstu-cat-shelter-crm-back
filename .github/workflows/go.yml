@@ -37,7 +37,7 @@ jobs:
           **/go.sum
           **/go.mod
 
-    - name: Gotools Cache
+    - name: Cache gotools
       uses: actions/cache@v2
       id: cache-gotools
       with:
@@ -71,9 +71,18 @@ jobs:
           **/go.sum
           **/go.mod
 
+    - name: Cache gotools
+      uses: actions/cache@v2
+      id: cache-gotools
+      with:
+        path: ~/go/bin
+        key: ${{ runner.os }}-go-${{ hashFiles('**/Makefile') }}
+        restore-keys: ${{ runner.os }}-go-
+          
     - name: Install tools
+      if: steps.cache-gotools.outputs.cache-hit != 'true'
       run: make gotools
-
+        
     - name: Gen mocks
       run: make mocks
 
