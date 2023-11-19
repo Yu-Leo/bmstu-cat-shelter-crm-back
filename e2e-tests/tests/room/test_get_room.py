@@ -14,5 +14,5 @@ def test_get_room(base_url):
     assert response.status_code == HTTPStatus.OK
 
     response_data = json.loads(response.text)
-    assert room1.number != response_data["number"]
+    assert room1.number == response_data["number"]
     assert room1.status == response_data["status"]
