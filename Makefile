@@ -36,3 +36,7 @@ test:
 	go test -v ./...
 .PHONY: test
 
+e2e-tests:
+	docker compose -f docker-compose.ci.yaml up --build ci-e2e-tests-client --exit-code-from ci-e2e-tests-client
+	docker compose -f docker-compose.ci.yaml down
+.PHONY: e2e-tests

@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  ci-server:
+    hostname: server
+    container_name: ci-server
+    build: .
+    ports:
+      - "127.0.0.1:9000:9000"
+    environment:
+      APP_HOST: "0.0.0.0"
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:9000/health" ]
+      timeout: 1s
+      interval: 2s
+      retries: 3
+    networks:
+      - ci
+      
+  ci-e2e-tests-client:
+    container_name: ci-e2e-tests-client
+    build: ./e2e-tests/.
+    command: [ "python", "-m", "pytest", "./tests" ]
+    environment:
+      DYNACONF_SERVER_HOST: "server"
+    depends_on:
+      ci-server:
+        condition: service_healthy
+    networks:
+      - ci
+
+networks:
+  ci:
